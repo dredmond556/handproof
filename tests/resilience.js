@@ -23,7 +23,7 @@ function ok(c, m) { if (c) { pass++; console.log('PASS  ' + m); } else { fail++;
   const msg = await p2.textContent('#amsg');
   ok(/Couldn’t reach the server/.test(msg), 'server down: sign-in says so plainly (“' + msg + '”)');
   await p2.goto(base + '#/browse'); await p2.waitForTimeout(800);
-  ok(await p2.isVisible('#none') && /Couldn’t load published pieces/.test(await p2.textContent('#none')) && (await p2.$$('#rows a.tile')).length >= 2, 'server down: Browse says so and still shows the samples');
+  ok(await p2.isVisible('#none') && /Couldn’t load published pieces/.test(await p2.textContent('#none')), 'server down: Browse says so instead of showing an empty list');
   await p2.goto(base + '#/p/00000000-0000-0000-0000-000000000000'); await p2.waitForTimeout(800);
   ok(/isn’t here/.test(await p2.textContent('h1')), 'server down: a public link shows a clear message');
   const bad = problems.concat(B.problems).filter((x) => !/503|abort|ERR_FAILED/i.test(x));

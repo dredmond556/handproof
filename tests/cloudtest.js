@@ -158,7 +158,7 @@ function fill(w, sel, v) { const el = $(w, sel); el.value = v; el.dispatchEvent(
   /* ---- browse, account list ---- */
   await go(w, '#/browse'); await sleep(300);
   ok($$(w, '#rows a.tile').some((a) => a.getAttribute('href') === pubHash && /Cloud piece/.test(a.textContent)), 'browse lists the published piece with a public link');
-  ok($$(w, '#rows a.tile').length >= 3, 'browse still shows the samples');
+  ok($$(w, '#rows a.tile').length >= 1 && !$$(w, '#rows .tile').some((a) => /Sample/.test(a.textContent)), 'browse shows no sample pieces');
   await go(w, '#/account'); await sleep(300);
   ok($$(w, '#cmine .rowitem').length === 1 && !!$(w, '#cmine a'), 'account lists the published piece');
 
