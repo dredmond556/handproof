@@ -1,0 +1,2648 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Handproof</title>
+<meta name="description" content="Handproof keeps the record of how writing, art, photos, music and films were made, so anyone can see the process instead of trusting a detector’s score.">
+<meta name="theme-color" content="#ffffff">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Handproof: proof that a person made it">
+<meta property="og:description" content="Write in Handproof and the revision history is recorded. Readers can replay how the piece came together.">
+<meta name="twitter:card" content="summary">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Handproof">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..800&family=Courier+Prime:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+  /* Revision colors follow the order film scripts use for revision pages:
+     white, blue, pink, yellow, green, goldenrod, buff, salmon, cherry. */
+  :root{
+    --white:#fff; --ink:#1E2024; --stone:#62656D; --line:#E2E3E7; --surface:#F6F6F7;
+    --blue:#D9E8F8; --blue-ink:#3F7FC4;
+    --pink:#FADCE5; --pink-ink:#CF5C83;
+    --yellow:#FCF2BC; --yellow-ink:#B89B14;
+    --green:#DAEED2; --green-ink:#4A9638;
+    --gold:#F4DC96; --buff:#EDE0C3; --salmon:#F9CDBB;
+    --flag:#B3263A; --flag-bg:#FBE4E7; --good:#1F7A4D; --good-bg:#DDF1E5;
+    --sans:'Archivo',system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    --script:'Courier Prime','Courier New',Courier,monospace;
+  }
+  *{box-sizing:border-box;}
+  [hidden]{display:none !important;}
+  html{-webkit-text-size-adjust:100%;}
+  body{margin:0; background:var(--white); color:var(--ink); font-family:var(--sans); font-size:17px; line-height:1.6; -webkit-font-smoothing:antialiased;}
+  a{color:inherit;}
+  :focus-visible{outline:3px solid var(--blue-ink); outline-offset:2px;}
+  .wrap{max-width:1120px; margin:0 auto; padding:0 24px;}
+  .narrow{max-width:820px;}
+  p{margin:0 0 14px; max-width:62ch;}
+  h1,h2,h3{font-weight:800; font-stretch:112%; letter-spacing:-.02em; line-height:1.05; margin:0; text-wrap:balance;}
+  h1{font-size:clamp(34px,5.4vw,60px); margin:44px 0 18px;}
+  h2{font-size:clamp(26px,3.6vw,38px); margin:0 0 18px;}
+  h3{font-size:20px; letter-spacing:-.01em;}
+  .muted{color:var(--stone);}
+  .sr{position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap;}
+
+  /* top bar */
+  .top{border-bottom:1px solid var(--line); background:var(--white); position:sticky; top:0; z-index:5;}
+  .top .wrap{display:flex; align-items:center; justify-content:space-between; height:64px;}
+  .brand{display:flex; align-items:center; gap:10px; text-decoration:none; font-weight:800; font-stretch:112%; font-size:19px; letter-spacing:-.02em;}
+  .top nav{display:flex; align-items:center; gap:6px;}
+  .top nav a{white-space:nowrap; text-decoration:none; font-weight:500; font-size:15px; padding:8px 12px; border-bottom:2px solid transparent;}
+  .top nav a:hover{background:var(--surface); border-radius:6px;}
+  .top nav a[aria-current="page"]{border-bottom-color:var(--ink); border-radius:0;}
+  .top nav a.btn{margin-left:8px; border-bottom:0;}
+
+  /* controls */
+  .btn{display:inline-flex; align-items:center; justify-content:center; gap:8px; font:inherit; font-weight:600; font-size:15px; padding:11px 18px; border-radius:8px; border:1.5px solid var(--ink); background:var(--white); color:var(--ink); text-decoration:none; cursor:pointer; line-height:1.2;}
+  .btn:hover{background:var(--surface);}
+  .btn.primary{background:var(--ink); color:var(--white);}
+  .btn.primary:hover{background:#000;}
+  .btn:disabled{opacity:.4; cursor:not-allowed;}
+  .top nav a.btn.primary:hover{background:#000;}
+  .linkbtn{font:inherit; font-size:14px; background:none; border:none; padding:4px 0; color:var(--ink); text-decoration:underline; text-underline-offset:3px; cursor:pointer;}
+  .linkbtn.danger{color:var(--flag);}
+  input[type=text], input[type=search], input[type=email], input[type=password], textarea, select{font:inherit; color:var(--ink); background:var(--white); border:1.5px solid #C4C6CD; border-radius:8px; padding:10px 12px;}
+  input:focus, textarea:focus, select:focus{outline:none; border-color:var(--ink); box-shadow:0 0 0 3px rgba(63,127,196,.35);}
+  label{display:block; font-weight:600; font-size:15px; margin:22px 0 6px;}
+  label.inline{display:inline; margin:0 8px 0 0; font-weight:500;}
+
+  .chip{display:inline-block; font-size:13px; font-weight:600; line-height:1; padding:6px 10px; border-radius:99px; background:var(--surface); color:var(--stone); white-space:nowrap;}
+  .chip.good{background:var(--good-bg); color:var(--good);}
+  .chip.flag{background:var(--flag-bg); color:var(--flag);}
+  .chip.blue{background:var(--blue); color:#23527f;}
+  .chip.pink{background:var(--pink); color:#8e3555;}
+  .chip.yellow{background:var(--yellow); color:#6e5d05;}
+
+  /* hero */
+  .hero h1{font-size:clamp(42px,8.2vw,104px); margin:56px 0 22px; line-height:.98; max-width:11em;}
+  .lede{font-size:clamp(18px,2vw,21px); line-height:1.5; max-width:54ch; margin-bottom:26px;}
+  .cta-row{display:flex; gap:12px; flex-wrap:wrap; margin-bottom:56px;}
+  .legend{display:flex; flex-wrap:wrap; gap:8px 26px; margin:14px 0 0; padding:0; list-style:none; font-size:14px; color:var(--stone);}
+  .legend li{display:flex; align-items:center; gap:8px; margin:0;}
+  .sw{width:22px; height:12px; border-radius:2px; display:inline-block; border:1px solid rgba(0,0,0,.2);}
+  .sw.line{height:0; border:0; border-top:2px solid var(--ink); border-radius:0;}
+  .sw.mark{width:3px; height:14px; background:var(--flag); border:0;}
+
+  section.block{padding-top:96px;}
+
+  /* replay */
+  .replay{border:1.5px solid var(--ink); border-radius:12px; overflow:hidden; background:var(--white);}
+  .rp-bar{display:flex; align-items:center; gap:14px; padding:10px 14px; border-bottom:1px solid var(--line);}
+  .rp-bar .lbl{font-size:14px; color:var(--stone); overflow:hidden; text-overflow:ellipsis; white-space:nowrap;}
+  .rp-play{display:inline-flex; align-items:center; gap:8px; font:inherit; font-weight:600; font-size:14px; background:var(--ink); color:#fff; border:0; border-radius:99px; padding:8px 16px 8px 13px; cursor:pointer; min-width:92px;}
+  .rp-play:hover{background:#000;}
+  .chart-plot{position:relative; height:170px; touch-action:pan-y; cursor:col-resize; background:var(--white);}
+  .chart-plot:focus-visible{outline-offset:-3px;}
+  .chart-plot svg{width:100%; height:100%; display:block;}
+  .chart-plot .ymax{position:absolute; left:10px; top:8px; font-size:12px; color:var(--stone); background:rgba(255,255,255,.85); padding:1px 6px; border-radius:4px; pointer-events:none;}
+  .chart-axis{display:flex; justify-content:space-between; font-size:12px; color:var(--stone); padding:5px 12px 0; font-variant-numeric:tabular-nums;}
+  .trace{fill:none; stroke:var(--ink); stroke-width:2; vector-effect:non-scaling-stroke; stroke-linejoin:round;}
+  .pastemark{stroke:var(--flag); stroke-width:3; vector-effect:non-scaling-stroke;}
+  .head{stroke:var(--ink); stroke-width:2; vector-effect:non-scaling-stroke;}
+  .stack{display:flex; gap:2px; padding:12px 14px 4px;}
+  .stack .tab{flex:1 1 0; min-width:4px; max-width:44px; height:26px; border:0; padding:0; background:none; position:relative; cursor:pointer;}
+  .stack .tab::before{content:""; position:absolute; left:0; right:0; top:9px; height:8px; border-radius:3px; background:var(--bg); box-shadow:inset 0 0 0 1px var(--ink); transition:top .12s, height .12s, background-color .12s;}
+  .stack .tab:hover::before{top:7px; height:12px;}
+  .stack .tab.on::before{top:5px; height:16px; background:var(--ink); box-shadow:none;}
+  .stack .tab.p::after{content:""; position:absolute; left:50%; top:-3px; width:5px; height:5px; margin-left:-2.5px; border-radius:50%; background:var(--flag);}
+  .rp-note{padding:9px 14px; background:var(--flag-bg); color:var(--flag); font-size:14px; font-weight:500; border-top:1px solid #f1c3c9;}
+  .page{border-top:1.5px solid var(--ink);}
+  .page-head{display:flex; justify-content:space-between; gap:12px; flex-wrap:wrap; padding:10px 20px; font-size:14px; border-bottom:1px solid rgba(0,0,0,.12);}
+  .page-head .rev-name{font-weight:700;}
+  .page-head .rp-info{color:#44474e; font-variant-numeric:tabular-nums;}
+  .rp-text{padding:22px 24px 28px; font:16px/1.75 var(--script); white-space:pre-wrap; min-height:140px; overflow-wrap:anywhere; max-width:72ch;}
+  .rp-text .empty{color:#6b6e75; font-style:italic;}
+
+  /* crafts */
+  .crafts{display:grid; grid-template-columns:260px 1fr; gap:28px; align-items:start; margin-top:30px;}
+  .craft-tabs{display:flex; flex-direction:column; gap:8px;}
+  .craft-tab{font:inherit; text-align:left; background:var(--white); border:1.5px solid var(--line); border-left-width:6px; border-radius:8px; padding:14px 16px; cursor:pointer;}
+  .craft-tab strong{display:block; font-size:18px; font-weight:700;}
+  .craft-tab span{font-size:14px; color:var(--stone);}
+  .craft-tab:hover{background:var(--surface);}
+  .craft-tab[aria-selected="true"]{border-color:var(--ink); background:var(--tint);}
+  .craft-tab[data-craft="writing"]{--tint:var(--yellow); border-left-color:var(--yellow-ink);}
+  .craft-tab[data-craft="acting"]{--tint:var(--pink); border-left-color:var(--pink-ink);}
+  .craft-tab[data-craft="film"]{--tint:var(--green); border-left-color:var(--green-ink);}
+  .craft-panel{border:1.5px solid var(--ink); border-radius:12px; padding:28px; min-height:420px;}
+  .craft-panel h3{font-size:28px; margin:12px 0 12px; font-stretch:108%;}
+  .craft-panel ul{margin:0 0 16px; padding-left:20px;}
+  .craft-panel li{margin-bottom:5px;}
+  .craft-panel .limit{font-size:15px; color:var(--stone); border-left:3px solid var(--line); padding-left:12px;}
+  .preview{margin:18px 0 18px; border:1px solid var(--line); border-radius:10px; overflow:hidden; background:var(--white);}
+  .preview .spark{height:110px;}
+  .preview-cap{padding:8px 12px; font-size:13px; color:var(--stone); border-top:1px solid var(--line);}
+  .take{display:grid; grid-template-columns:14px 1fr auto; gap:14px; align-items:center; padding:12px 14px; border-top:1px solid var(--line);}
+  .take:first-child{border-top:0;}
+  .take i{display:block; height:30px; border-radius:2px 2px 0 0; border-bottom:3px solid;}
+  .take b{display:block; font-weight:700; line-height:1.2;}
+  .take small{font-size:13px; color:var(--stone);}
+  .prompt{margin:0; padding:12px 14px; background:var(--pink); font-size:14.5px; max-width:none; display:flex; gap:10px; justify-content:space-between; flex-wrap:wrap; align-items:center;}
+  .mix{display:flex; height:16px; border-radius:99px; overflow:hidden; margin:14px;}
+  .mix span{display:block;}
+
+  .two{display:grid; grid-template-columns:1fr 1fr; gap:40px; margin-top:24px;}
+  .two ul{margin:12px 0 0; padding-left:20px; max-width:50ch;}
+  .two li{margin-bottom:8px;}
+  .band{background:var(--blue); border-radius:16px; padding:56px 40px; margin-top:96px;}
+  .band h2{max-width:20ch; font-size:clamp(28px,4.4vw,48px);}
+
+  /* editor */
+  .title-input{width:100%; font-size:24px; font-weight:700; font-stretch:106%;}
+  textarea.draft{width:100%; min-height:340px; font:17px/1.75 var(--script); padding:18px 20px; resize:vertical; border-radius:10px;}
+  .notice{background:var(--yellow); border-radius:8px; padding:10px 14px; font-size:15px; margin:0 0 6px; max-width:none;}
+  .stats{display:grid; grid-template-columns:repeat(auto-fit,minmax(120px,1fr)); gap:1px; background:var(--line); border:1px solid var(--line); border-radius:10px; overflow:hidden; margin:18px 0;}
+  .stat{background:var(--white); padding:14px 16px;}
+  .stat b{display:block; font-size:26px; font-weight:700; letter-spacing:-.01em; font-variant-numeric:tabular-nums; line-height:1.15;}
+  .stat b.bad{color:var(--flag);}
+  .stat span{font-size:14px; color:var(--stone);}
+  .actions{display:flex; gap:10px; align-items:center; flex-wrap:wrap; margin:22px 0 70px;}
+  .byline{color:var(--stone); margin:0 0 6px;}
+  .pf-bio{white-space:pre-wrap; max-width:62ch; font-size:18px; line-height:1.65; margin:0 0 18px;}
+  .pf-line{margin:0 0 6px; overflow-wrap:anywhere;}
+  .pf-line .muted{display:inline-block; min-width:76px;}
+  textarea.bio-in{width:100%; max-width:560px; min-height:110px; resize:vertical; line-height:1.55;}
+  .small-note{font-size:14px; margin:6px 0 14px;}
+  .chip.green{background:var(--green); color:#2f6a22;}
+  button.chip{font-family:inherit; border:0; cursor:pointer;}
+  .kind-filters{display:contents;}
+  .kinds{border:0; padding:0; margin:20px 0 0; display:flex; flex-wrap:wrap; gap:10px;}
+  .kinds legend{font-weight:600; font-size:15px; margin-bottom:8px; padding:0;}
+  .kind{margin:0; font-weight:600; display:flex; align-items:center; gap:8px; border:1.5px solid var(--line); border-radius:10px; padding:12px 16px; cursor:pointer;}
+  .kind:has(input:checked){border-color:var(--ink); background:var(--surface);}
+  .wk-thumb{height:150px; background:var(--surface); border-bottom:1px solid var(--line); display:flex; align-items:center; justify-content:center; overflow:hidden; color:var(--stone); font-weight:700; font-stretch:112%; font-size:20px;}
+  .wk-thumb img{width:100%; height:100%; object-fit:cover; display:block;}
+  .work-main{margin:18px 0 8px;}
+  .work-fig{margin:0 0 16px;}
+  .work-fig figcaption{color:var(--stone); font-size:15px; margin-bottom:6px;}
+  .work-img{max-width:100%; max-height:80vh; height:auto; display:block; border:1px solid var(--line); border-radius:8px;}
+  .work-vid{max-width:100%; max-height:80vh; display:block; border-radius:8px; background:#000;}
+  .work-fig audio{width:100%; max-width:560px;}
+  .row-thumb{width:48px; height:48px; object-fit:cover; border-radius:6px; border:1px solid var(--line);}
+  .craft-tab[data-craft="art"]{--tint:var(--pink); border-left-color:var(--pink-ink);}
+  .craft-tab[data-craft="photo"]{--tint:var(--blue); border-left-color:var(--blue-ink);}
+  .craft-tab[data-craft="music"]{--tint:var(--yellow); border-left-color:var(--yellow-ink);}
+  .banner{display:block; padding:12px 16px; border-radius:8px; font-weight:500; margin:0 0 16px; max-width:none;}
+  .banner.good{background:var(--good-bg); color:var(--good);}
+  .banner.bad{background:var(--flag-bg); color:var(--flag);}
+  .gap{height:70px;}
+
+  /* browse */
+  .filters{display:flex; gap:10px; flex-wrap:wrap; align-items:center; margin:0 0 24px;}
+  .filters .chip{font-size:14px; padding:8px 14px;}
+  .filters .chip.on{background:var(--ink); color:#fff;}
+  .filters .chip.off{opacity:.55;}
+  .filters input{margin-left:auto; min-width:220px;}
+  .subnav{display:flex; gap:8px; margin:0 0 18px;}
+  .subnav a{font-weight:600; font-size:15px; text-decoration:none; padding:8px 14px; border-radius:99px; background:var(--surface); color:var(--stone);}
+  .subnav a[aria-current]{background:var(--ink); color:#fff;}
+  .artist{display:flex; flex-direction:column; gap:8px; border:1.5px solid var(--line); border-radius:12px; padding:18px 20px; text-decoration:none; background:var(--white); color:inherit;}
+  .artist:hover{border-color:var(--ink);}
+  .artist h3{margin:0;}
+  .artist p{margin:0; color:var(--stone); font-size:15px; line-height:1.45;}
+  .artist .chips{display:flex; gap:6px; flex-wrap:wrap;}
+  .grid{display:grid; grid-template-columns:repeat(auto-fill,minmax(310px,1fr)); gap:22px; margin-bottom:80px;}
+  .tile{display:block; border:1.5px solid var(--line); border-radius:12px; overflow:hidden; text-decoration:none; background:var(--white);}
+  .tile:hover{border-color:var(--ink);}
+  .spark{height:96px; border-bottom:1px solid var(--line);}
+  .spark svg{width:100%; height:100%; display:block;}
+  .tile-body{padding:16px 18px 18px;}
+  .tile h3{margin-bottom:2px;}
+  .tile .by{color:var(--stone); font-size:15px; margin:0 0 12px;}
+  .facts{display:flex; flex-wrap:wrap; gap:8px; align-items:center;}
+  .facts span{font-size:14px; color:var(--stone);}
+  .facts .chip{color:inherit;}
+  .facts .chip.good{color:var(--good);} .facts .chip.flag{color:var(--flag);}
+  .empty-state{padding:40px 0; color:var(--stone);}
+
+  /* profile */
+  .who{display:flex; align-items:center; gap:18px; margin:44px 0 22px;}
+  .avatar{width:60px; height:60px; border-radius:50%; background:var(--pink); border:1.5px solid var(--ink); display:flex; align-items:center; justify-content:center; font-weight:800; font-stretch:112%; font-size:26px; flex:0 0 auto;}
+  .who .title-input{max-width:360px;}
+  .rows{border:1px solid var(--line); border-radius:12px; overflow:hidden; margin:0 0 30px;}
+  .rowitem{display:grid; grid-template-columns:1fr 130px 90px 140px 60px; gap:14px; align-items:center; padding:13px 18px; border-top:1px solid var(--line); font-size:15px;}
+  .rowitem:first-child{border-top:0;}
+  .rowitem a{font-weight:600;}
+  .rowitem.wfile{display:flex; flex-wrap:wrap; align-items:center; gap:6px 16px;}
+  .rowitem.wfile>span:first-child{flex:1 1 220px; min-width:0; overflow-wrap:anywhere; display:flex; align-items:center; gap:12px;}
+  .work-top{margin-top:30px;}
+  .feedback{margin-top:34px;}
+  .react{display:flex; align-items:center; gap:10px; flex-wrap:wrap; margin:12px 0 26px;}
+  .rbtn{font:inherit; font-weight:600; display:inline-flex; align-items:center; gap:8px; background:var(--white); color:var(--ink); border:1.5px solid #C4C6CD; border-radius:99px; padding:9px 16px; cursor:pointer;}
+  .rbtn:hover{border-color:var(--ink);}
+  .rbtn[aria-pressed="true"]{background:var(--ink); color:#fff; border-color:var(--ink);}
+  .cm-h{font-size:20px; margin:0 0 12px;}
+  .cm-in{width:100%; max-width:640px; min-height:90px; resize:vertical; line-height:1.55;}
+  .cm-sort{margin:18px 0 6px;}
+  .cm-sort select{width:auto;}
+  .cm-list{list-style:none; margin:8px 0 18px; padding:0; max-width:700px;}
+  .cm{padding:14px 0; border-top:1px solid var(--line);}
+  .cm:first-child{border-top:0;}
+  .cm-head{font-size:15px; margin-bottom:4px;}
+  .cm-head a{text-decoration:none;}
+  .cm-body{white-space:pre-wrap; overflow-wrap:anywhere; margin:0 0 6px;}
+  .cm-act{display:flex; gap:14px;}
+  .cm-note{font-size:14px; margin:6px 0 0;}
+  .cm-rep{margin-top:8px;}
+  .cm-rep select{width:auto; max-width:100%;}
+  .legal h2{font-size:22px; margin:34px 0 10px;}
+  .legal p, .legal li{max-width:68ch;}
+  .legal .updated{color:var(--stone); margin-top:-4px;}
+  .foot-links a{margin-left:14px; color:inherit;}
+  .check{display:flex; gap:10px; align-items:flex-start; font-weight:500; margin:18px 0 0; max-width:520px;}
+  .check input{margin-top:4px; flex:none; width:18px; height:18px;}
+  .report-box{margin-top:30px; max-width:560px;}
+  .report-box select, .report-box textarea{width:100%; max-width:560px;}
+  .report-box textarea{min-height:88px; resize:vertical;}
+  .danger-zone{border-color:#E4B6BD;}
+  .title-input.small{font-size:17px; font-weight:500; font-stretch:100%; max-width:420px;}
+  .facts-list{display:grid; grid-template-columns:max-content 1fr; gap:6px 18px; margin:0 0 14px; font-size:15px;}
+  .facts-list dt{color:var(--stone);} .facts-list dd{margin:0;}
+  .fp{font-family:'Courier Prime',ui-monospace,monospace; word-break:break-all;}
+  .panel.verify{max-width:none;}
+  .panel{border:1.5px solid var(--line); border-radius:12px; padding:20px 22px; margin:30px 0 0; max-width:640px;}
+  .panel h2{font-size:20px; margin-bottom:8px;}
+  fieldset.vis{border:1.5px solid var(--line); border-radius:12px; padding:12px 16px 8px; margin:18px 0 8px; max-width:560px;}
+  fieldset.vis legend{font-weight:600; padding:0 6px;}
+  .vis-opt{display:flex; gap:10px; align-items:flex-start; margin:0 0 10px; cursor:pointer;}
+  .vis-opt input{margin-top:5px;}
+  .vis-opt small{display:block; color:var(--muted); font-weight:400; line-height:1.4;}
+  .livenote{display:block; font-weight:400; margin-top:2px;}
+  .release{margin:6px 0 14px;}
+  .linkbox{display:flex; gap:8px; flex-wrap:wrap; align-items:center; margin:10px 0 0;}
+  .linkbox input{flex:1 1 260px; min-width:0;}
+  .panel .row{display:flex; gap:12px; align-items:center; flex-wrap:wrap; margin-bottom:12px;}
+
+  footer{margin-top:96px; border-top:1px solid var(--line); padding:22px 0 34px; font-size:14px; color:var(--stone);}
+
+  @media (max-width:860px){
+    .crafts{grid-template-columns:1fr;}
+    .craft-tabs{flex-direction:row; flex-wrap:wrap;}
+    .craft-tab{flex:1 1 150px;}
+    .two{grid-template-columns:1fr; gap:24px;}
+    .band{padding:36px 24px;}
+  }
+  @media (max-width:640px){
+    .wrap{padding:0 18px;}
+    .top nav{gap:0;}
+    .top nav a:not(.btn){padding:8px 7px;}
+    .top nav a.btn{margin-left:6px; padding:8px 14px;}
+    .stats{grid-template-columns:repeat(2,1fr);}
+    .stats > .stat:last-child:nth-child(odd){grid-column:1/-1;}
+    .rowitem{grid-template-columns:1fr auto; row-gap:4px;}
+    .rowitem .hide-s{display:none;}
+    .filters input{margin-left:0; width:100%;}
+    .craft-panel{padding:20px;}
+    .rp-text{padding:18px 16px 22px;}
+  }
+  @media (max-width:440px){
+    .brand .wm{display:none;}
+    .top .wrap{padding:0 14px;}
+    .top nav a:not(.btn){padding:8px 5px; font-size:14px;}
+    .top nav a.btn{margin-left:4px; padding:8px 12px;}
+  }
+  @media (prefers-reduced-motion:reduce){*{transition:none !important; animation:none !important; scroll-behavior:auto !important;}}
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="wrap">
+    <a class="brand" href="#/" aria-label="Handproof home">
+      <svg width="28" height="28" viewBox="0 0 28 28" aria-hidden="true">
+        <rect x="10" y="2" width="15" height="19" rx="2" fill="#FCF2BC" stroke="#1E2024" stroke-width="1.5"/>
+        <rect x="6" y="4.5" width="15" height="19" rx="2" fill="#FADCE5" stroke="#1E2024" stroke-width="1.5"/>
+        <rect x="2" y="7" width="15" height="19" rx="2" fill="#D9E8F8" stroke="#1E2024" stroke-width="1.5"/>
+      </svg>
+      <span class="wm">Handproof</span>
+    </a>
+    <nav aria-label="Main">
+      <a href="#/browse" data-route="browse">Browse</a>
+      <a href="#/make" data-route="make">Share work</a>
+      <a href="#/profile" data-route="profile">Profile</a>
+      <a href="#/account" data-route="account" id="nav-account" hidden>Sign in</a>
+      <a href="#/write" class="btn primary" data-route="write">Write</a>
+    </nav>
+  </div>
+</header>
+
+<noscript><p style="padding:24px;font:16px sans-serif">Handproof needs JavaScript to record and replay writing.</p></noscript>
+<main id="app"></main>
+<noscript><p style="padding:24px;font:16px sans-serif">Handproof needs JavaScript to record and replay writing.</p></noscript>
+
+<footer>
+  <div class="wrap" id="foot">Pieces and drafts stay in this browser and are never uploaded.</div>
+  <div class="wrap" id="installbar" hidden><button class="linkbtn" type="button" id="installbtn">Install Handproof on this device</button> <span class="muted" id="installhint"></span></div>
+</footer>
+
+<script>
+/* Fill these in to turn on accounts and public links (see SETUP.md). Leave both empty to run in this browser only. */
+/* contact: the email address shown on the Terms and Privacy pages for questions, takedown requests and copyright notices. Set it before launch. */
+window.HANDPROOF_CONFIG={ url:'https://qmxkbvpzkgkkcdzbyget.supabase.co', key:'sb_publishable_SAngV-RM7ahc_GkMtApWow_xSsaVCRX', contact:'' };
+</script>
+<script src="vendor/supabase.js"></script>
+<script>
+(function(){
+'use strict';
+
+var PIECES_KEY='handproof.pieces.v1', NAME_KEY='handproof.name', DRAFT_KEY='handproof.draft.v1';
+var app=document.getElementById('app');
+
+/* The app used to be called Handmark. Carry over anything saved under the old name. */
+['pieces.v1','name','draft.v1'].forEach(function(k){
+  try{
+    var old=localStorage.getItem('handmark.'+k);
+    if(old!==null && localStorage.getItem('handproof.'+k)===null) localStorage.setItem('handproof.'+k,old);
+  }catch(e){}
+});
+
+/* ---------- helpers ---------- */
+function esc(s){ return String(s).replace(/[&<>"']/g,function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]; }); }
+var store={
+  get:function(k,d){ try{ var v=localStorage.getItem(k); return v?JSON.parse(v):d; }catch(e){ return d; } },
+  set:function(k,v){ try{ localStorage.setItem(k,JSON.stringify(v)); return true; }catch(e){ return false; } },
+  remove:function(k){ try{ localStorage.removeItem(k); }catch(e){} }
+};
+function fmtDur(sec){
+  sec=Math.round(sec||0);
+  if(sec<60) return sec+'s';
+  var h=Math.floor(sec/3600), m=Math.floor(sec%3600/60), s=sec%60;
+  if(h>0) return h+'h '+m+'m';
+  return m+'m '+s+'s';
+}
+function fmtClock(sec){
+  sec=Math.max(0,Math.round(sec));
+  var h=Math.floor(sec/3600), m=Math.floor(sec%3600/60), s=sec%60, ss=(s<10?'0':'')+s;
+  return h>0 ? h+':'+(m<10?'0':'')+m+':'+ss : m+':'+ss;
+}
+function wordCount(t){ t=(t||'').trim(); return t?t.split(/\s+/).length:0; }
+function fmtDate(ms){ return new Date(ms).toLocaleDateString(undefined,{year:'numeric',month:'short',day:'numeric'}); }
+function chars(n){ return n+(n===1?' character':' characters'); }
+function plural(n,w){ return n+' '+w+(n===1?'':'s'); }
+
+/* Revision colors, in the order film scripts use for revision pages */
+var REV=[
+  {n:'White',bg:'#FFFFFF',ink:'#B9BCC4'},
+  {n:'Blue',bg:'#D9E8F8',ink:'#3F7FC4'},
+  {n:'Pink',bg:'#FADCE5',ink:'#CF5C83'},
+  {n:'Yellow',bg:'#FCF2BC',ink:'#B89B14'},
+  {n:'Green',bg:'#DAEED2',ink:'#4A9638'},
+  {n:'Goldenrod',bg:'#F4DC96',ink:'#B98708'},
+  {n:'Buff',bg:'#EDE0C3',ink:'#8F7A48'},
+  {n:'Salmon',bg:'#F9CDBB',ink:'#CC6741'},
+  {n:'Cherry',bg:'#F4BFC6',ink:'#B3263A'}
+];
+function rev(i){ var r=REV[i%REV.length]; return {n:r.n,bg:r.bg,ink:r.ink,round:Math.floor(i/REV.length)+1}; }
+
+/* keep first, last and every pasted snapshot; drop the least informative others */
+function sampleDown(arr,max){
+  max=max||60; arr=arr.slice();
+  while(arr.length>max){
+    var best=-1, bestGap=Infinity;
+    for(var i=1;i<arr.length-1;i++){
+      if(arr[i].paste) continue;
+      var gap=arr[i+1].t-arr[i-1].t;
+      if(gap<bestGap){ bestGap=gap; best=i; }
+    }
+    if(best<0) break;
+    arr.splice(best,1);
+  }
+  return arr;
+}
+function capSeries(s){
+  if(s.length<=2000) return s;
+  var out=[];
+  for(var i=0;i<s.length;i++){ if(i===0||i===s.length-1||s[i][2]>0||i%2===0) out.push(s[i]); }
+  return out;
+}
+function fallbackSeries(snaps){
+  var out=[];
+  if(snaps.length && snaps[0].t>0) out.push([0,0,0]);
+  snaps.forEach(function(s){ out.push([s.t*1000,(s.text||'').length,s.paste||0]); });
+  return out;
+}
+
+/* ---------- sample pieces (made up; the chart line is synthesized from the snapshots) ---------- */
+function rng(seed){
+  return function(){
+    seed|=0; seed=seed+0x6D2B79F5|0;
+    var t=Math.imul(seed^seed>>>15,1|seed);
+    t=t+Math.imul(t^t>>>7,61|t)^t;
+    return ((t^t>>>14)>>>0)/4294967296;
+  };
+}
+function synth(snaps,seed){
+  var r=rng(seed), out=[[0,0,0]], pT=0, pL=0;
+  snaps.forEach(function(s){
+    var L=s.text.length, T=s.t;
+    if(T<=pT){ out.push([T*1000,L,0]); pT=T; pL=L; return; }
+    var n=Math.max(8,Math.min(40,Math.round((T-pT)/50)));
+    for(var i=1;i<=n;i++){
+      var f=i/n, t=pT+(T-pT)*f, l=pL+(L-pL)*f;
+      if(i<n){
+        l+=(r()-0.5)*Math.min(30,Math.abs(L-pL)*0.25+6);
+        if(r()<0.12) l-=12+r()*40;
+        if(l<0) l=0;
+      }
+      out.push([Math.round(t*1000),Math.round(l),0]);
+    }
+    pT=T; pL=L;
+  });
+  return out;
+}
+var DEMO=[
+  {
+    id:'sample-low-tide', title:'Low Tide, Late August', author:'Mara Ostrowski', demo:true,
+    activeSeconds:9800, backspaces:214, pasted:0, pasteEvents:0,
+    snapshots:[
+      {t:0,text:'The house always smelled like'},
+      {t:400,text:'The house always smelled like cedar and something\nburnt, faint, from the stove nobody used.'},
+      {t:1100,text:'The house always smelled like cedar and something\nburnt, faint, from the stove nobody used.\n\nMy sister was already on the porch, arms crossed,'},
+      {t:2600,text:'The house always smelled like cedar and something\nburnt, faint, from the stove nobody used.\n\nMy sister was already on the porch, arms crossed,\nwatching the lake like it owed her something. Dad\nhadn’t come down yet.'},
+      {t:5200,text:'The house always smelled like cedar and something\nburnt, faint, from the stove nobody used.\n\nMy sister was already on the porch, arms crossed,\nwatching the lake like it owed her something. Dad\nhadn’t come down yet.\n\n“He’s not going to say goodbye to it,” she said,\nnot looking at me. “You know that, right?”'},
+      {t:9800,text:'The house always smelled like cedar and something\nburnt, faint, from the stove nobody used.\n\nMy sister was already on the porch, arms crossed,\nwatching the lake like it owed her something. Dad\nhadn’t come down yet.\n\n“He’s not going to say goodbye to it,” she said,\nnot looking at me. “You know that, right?”\n\nI didn’t answer. Some things you let sit in the\nmorning air a while before you touch them.'}
+    ]
+  },
+  {
+    id:'sample-slow-kitchen', title:'Notes from a Slow Kitchen', author:'Femi Adeyemi', demo:true,
+    activeSeconds:4700, backspaces:96, pasted:0, pasteEvents:0,
+    snapshots:[
+      {t:0,text:'I own three sizes of pot and I only use the smallest one now.'},
+      {t:900,text:'I own three sizes of pot and I only use the smallest\none now. The other two live in the cabinet like\nfurniture from a house I don’t visit anymore.'},
+      {t:2400,text:'I own three sizes of pot and I only use the smallest\none now. The other two live in the cabinet like\nfurniture from a house I don’t visit anymore.\n\nThere’s a specific loneliness to a recipe that says\n“serves four.” You do the math. You always do the math.'},
+      {t:4700,text:'I own three sizes of pot and I only use the smallest\none now. The other two live in the cabinet like\nfurniture from a house I don’t visit anymore.\n\nThere’s a specific loneliness to a recipe that says\n“serves four.” You do the math. You always do the math.\n\nBut somewhere around month six I stopped doing the\nmath and started just cooking what I wanted.'}
+    ]
+  }
+];
+DEMO.forEach(function(d,i){
+  var last=d.snapshots[d.snapshots.length-1].text;
+  d.series=synth(d.snapshots,17+i*31);
+  d.wordCount=wordCount(last);
+  d.excerpt=last.replace(/\s+/g,' ').slice(0,150)+'…';
+});
+
+/* ---------- state ---------- */
+var pieces=store.get(PIECES_KEY,[]);
+if(!Array.isArray(pieces)) pieces=[];
+var userName=store.get(NAME_KEY,'You');
+var draft=store.get(DRAFT_KEY,null);
+if(!draft || typeof draft.text!=='string' || !Array.isArray(draft.snaps) || !Array.isArray(draft.series)) draft=null;
+var restoredNotice=!!(draft && draft.text);
+var cleanups=[];
+
+function allPieces(){ return pieces.concat(DEMO); }
+function findPiece(id){ var a=allPieces(); for(var i=0;i<a.length;i++) if(a[i].id===id) return a[i]; return null; }
+function prefersReducedMotion(){ try{ return !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches); }catch(e){ return false; } }
+
+/* ---------- cloud (optional): accounts, server-side recording, public pages ---------- */
+var CONFIG=window.HANDPROOF_CONFIG||{url:'',key:''};
+var sb=null, user=null;
+try{
+  if(window.HANDPROOF_CLIENT) sb=window.HANDPROOF_CLIENT;
+  else if(CONFIG.url && CONFIG.key && window.supabase && window.supabase.createClient){
+    sb=window.supabase.createClient(CONFIG.url,CONFIG.key,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true}});
+  }
+}catch(e){ sb=null; }
+function cloudOn(){ return !!sb; }
+function rpc(name,args){
+  return Promise.resolve(sb.rpc(name,args||{})).then(function(r){
+    if(r.error) throw new Error(r.error.message||'Request failed');
+    return r.data;
+  });
+}
+function renderNav(){
+  var a=document.getElementById('nav-account'), f=document.getElementById('foot');
+  if(a){ a.hidden=!cloudOn(); a.textContent=user?'Account':'Sign in'; }
+  if(f) f.innerHTML=(cloudOn()
+    ? 'Pieces you publish while signed in are stored on Handproof’s server and have a link. Signed-out drafts stay in this browser.'
+    : (CONFIG.url && /^https?:$/.test(location.protocol)
+        ? 'Accounts are unavailable right now, so pieces and drafts stay in this browser and are not uploaded.'
+        : 'Pieces and drafts stay in this browser and are never uploaded.'))+
+    ' <span class="foot-links"><a href="#/terms">Terms</a> <a href="#/privacy">Privacy</a></span>';
+}
+var TERMS_VERSION='2026-11-12', recovering=false;
+function onEditor(){ return (location.hash||'').indexOf('#/write')===0; }
+function initAuth(){
+  renderNav();
+  if(!sb) return;
+  Promise.resolve(sb.auth.getSession()).then(function(r){
+    user=(r&&r.data&&r.data.session&&r.data.session.user)||null;
+    renderNav(); if(!onEditor()) route();
+  },function(){});
+  sb.auth.onAuthStateChange(function(ev,s){
+    var nu=(s&&s.user)||null, changed=(nu&&nu.id)!==(user&&user.id);
+    user=nu; renderNav();
+    if(ev==='PASSWORD_RECOVERY'){ recovering=true; if(location.hash==='#/account') route(); else location.hash='#/account'; return; }
+    if(changed && !onEditor()) route();
+  });
+}
+function cloudPiece(r){
+  /* shape a list_public_pieces row like a local piece so tiles and thumbnails can reuse the same code */
+  return {
+    id:r.id, cloud:true, title:r.title, author:r.author, authorId:r.author_id,
+    activeSeconds:r.active_seconds||0, wordCount:r.word_count||0,
+    pasted:Number(r.pasted_chars)||0, pasteEvents:r.paste_events||0,
+    createdAt:r.published_at?Date.parse(r.published_at):0,
+    snapshots:(r.band_times||[]).map(function(t){ return {t:t,text:'',paste:0}; }),
+    snapCount:r.snapshot_count||0, series:r.spark||[], suspect:r.suspect_batches||0
+  };
+}
+
+/* ---------- chart geometry shared by the replay and the small thumbnails ---------- */
+function chartParts(d){
+  var S=d.snaps||[], series=(d.series&&d.series.length)?d.series:fallbackSeries(S);
+  var tmax=1, lmax=1;
+  series.forEach(function(p){ if(p[0]>tmax) tmax=p[0]; if(p[1]>lmax) lmax=p[1]; });
+  S.forEach(function(s){ if(s.t*1000>tmax) tmax=s.t*1000; });
+  function xn(t){ return t/tmax*1000; }
+  function X(t){ return xn(t).toFixed(1); }
+  function Y(l){ return (194-(l/(lmax*1.05))*186).toFixed(1); }
+  var pts=series.map(function(p){ return X(p[0])+','+Y(p[1]); }).join(' ');
+  var bands='', i;
+  for(i=0;i<S.length;i++){
+    var x0=i===0?0:xn(S[i].t*1000), x1=i<S.length-1?xn(S[i+1].t*1000):1000;
+    if(x1-x0<0.01 && i<S.length-1) continue;
+    bands+='<rect class="band" x="'+x0.toFixed(1)+'" y="0" width="'+Math.max(0,x1-x0).toFixed(1)+'" height="200" fill="'+rev(i).bg+'"/>';
+  }
+  var marks='';
+  series.forEach(function(p){ if(p[2]>0) marks+='<line class="pastemark" x1="'+X(p[0])+'" x2="'+X(p[0])+'" y1="200" y2="'+Y(p[1])+'"/>'; });
+  return {tmax:tmax,lmax:lmax,xn:xn,pts:pts,bands:bands,marks:marks};
+}
+function sparkSVG(p){
+  var c=chartParts({snaps:p.snapshots,series:p.series});
+  return '<svg viewBox="0 0 1000 200" preserveAspectRatio="none" aria-hidden="true">'+c.bands+'<polyline class="trace" points="'+c.pts+'"/>'+c.marks+'</svg>';
+}
+
+/* ---------- replay: chart of text length over time, colored by revision, with the draft at that moment ---------- */
+var ICON_PLAY='<svg width="14" height="14" viewBox="0 0 14 14" aria-hidden="true"><path d="M3 1.5v11l9-5.5z" fill="currentColor"/></svg>';
+var ICON_PAUSE='<svg width="14" height="14" viewBox="0 0 14 14" aria-hidden="true"><path d="M3 1.5h3v11H3zM8 1.5h3v11H8z" fill="currentColor"/></svg>';
+
+function mountReplay(el,data,label,opts){
+  opts=opts||{};
+  var d=data, idx=0, timer=null, follow=true, dragging=false, tmaxMs=1;
+  el.innerHTML=
+    '<div class="replay">'+
+      '<div class="rp-bar"><button type="button" class="rp-play"></button><span class="lbl">'+esc(label||'')+'</span></div>'+
+      '<div class="chart-plot" tabindex="0" role="slider" aria-label="Position in the writing session" aria-valuemin="0" aria-valuenow="0">'+
+        '<span class="ymax"></span><svg viewBox="0 0 1000 200" preserveAspectRatio="none" aria-hidden="true"></svg>'+
+      '</div>'+
+      '<div class="chart-axis"><span>0:00</span><span class="a1"></span><span class="a2"></span></div>'+
+      '<div class="stack"></div>'+
+      '<div class="rp-note" hidden></div>'+
+      '<div class="page">'+
+        '<div class="page-head"><span class="rev-name"></span><span class="rp-info"></span></div>'+
+        '<div class="rp-text"></div>'+
+      '</div>'+
+    '</div>';
+  var plot=el.querySelector('.chart-plot'), svg=el.querySelector('svg'), ymax=el.querySelector('.ymax'),
+      play=el.querySelector('.rp-play'), info=el.querySelector('.rp-info'), note=el.querySelector('.rp-note'),
+      text=el.querySelector('.rp-text'), a1=el.querySelector('.a1'), a2=el.querySelector('.a2'),
+      stack=el.querySelector('.stack'), page=el.querySelector('.page'), revName=el.querySelector('.rev-name');
+
+  function snaps(){ return d.snaps||[]; }
+  function setLabel(on){ play.innerHTML=(on?ICON_PAUSE:ICON_PLAY)+'<span>'+(on?'Pause':'Play')+'</span>'; play.setAttribute('aria-label',on?'Pause':'Play'); }
+  function stop(){ if(timer){ clearInterval(timer); timer=null; } setLabel(false); }
+  function startPlay(){
+    var S=snaps();
+    if(!S.length) return;
+    if(idx>=S.length-1){ idx=0; follow=false; show(); }
+    setLabel(true);
+    timer=setInterval(function(){
+      if(idx>=snaps().length-1){ stop(); return; }
+      idx++; follow=(idx===snaps().length-1); show();
+    },650);
+  }
+
+  function drawChart(){
+    var S=snaps(), c=chartParts(d);
+    tmaxMs=c.tmax;
+    svg.innerHTML=c.bands+
+      '<polyline class="trace" points="'+c.pts+'"/>'+
+      '<rect class="future" x="1000" y="0" width="0" height="200" fill="#fff" opacity=".62"/>'+
+      c.marks+
+      '<line class="head" x1="0" x2="0" y1="0" y2="200"/>';
+    ymax.textContent=chars(c.lmax);
+    a1.textContent=fmtClock(c.tmax/2000);
+    a2.textContent=fmtClock(c.tmax/1000);
+    var h='';
+    for(var i=0;i<S.length;i++){
+      var r=rev(i);
+      h+='<button type="button" class="tab'+(S[i].paste?' p':'')+'" tabindex="-1" aria-hidden="true" data-i="'+i+'" title="'+r.n+' revision, '+fmtClock(S[i].t)+'" style="--bg:'+r.bg+';--ink:'+r.ink+'"></button>';
+    }
+    stack.innerHTML=h;
+  }
+  function show(){
+    var S=snaps();
+    if(!S.length){
+      page.style.background='#fff';
+      revName.textContent='White revision';
+      text.innerHTML='<span class="empty">Nothing recorded yet. Start typing and the chart fills in.</span>';
+      info.textContent='No snapshots yet'; note.hidden=true; return;
+    }
+    if(idx>S.length-1) idx=S.length-1;
+    if(idx<0) idx=0;
+    var s=S[idx], r=rev(idx), xv=Math.min(1000,s.t*1000/tmaxMs*1000);
+    var head=svg.querySelector('.head'), fut=svg.querySelector('.future');
+    if(head){ head.setAttribute('x1',xv); head.setAttribute('x2',xv); }
+    if(fut){ fut.setAttribute('x',xv); fut.setAttribute('width',Math.max(0,1000-xv)); }
+    var tabs=stack.children;
+    for(var i=0;i<tabs.length;i++) tabs[i].classList.toggle('on',i===idx);
+    plot.setAttribute('aria-valuenow',idx); plot.setAttribute('aria-valuemax',S.length-1);
+    plot.setAttribute('aria-valuetext','Snapshot '+(idx+1)+' of '+S.length+', '+fmtClock(s.t));
+    page.style.background=r.bg;
+    revName.textContent=r.n+' revision'+(r.round>1?', round '+r.round:'');
+    info.textContent='Snapshot '+(idx+1)+' of '+S.length+', '+fmtClock(s.t)+' in, '+chars((s.text||'').length);
+    if(s.paste){ note.hidden=false; note.textContent='About '+chars(s.paste)+' were pasted in at this point.'; } else { note.hidden=true; }
+    if(s.text) text.textContent=s.text; else text.innerHTML='<span class="empty">(empty at this point)</span>';
+  }
+  function full(){ drawChart(); show(); }
+  function seek(e){
+    var rc=plot.getBoundingClientRect();
+    if(!rc.width) return;
+    var f=Math.min(1,Math.max(0,(e.clientX-rc.left)/rc.width)), target=f*tmaxMs/1000, S=snaps(), best=0;
+    for(var i=0;i<S.length;i++){ if(S[i].t<=target) best=i; }
+    idx=best; follow=(idx===S.length-1); show();
+  }
+  plot.addEventListener('pointerdown',function(e){ stop(); dragging=true; try{ plot.setPointerCapture(e.pointerId); }catch(x){} seek(e); });
+  plot.addEventListener('pointermove',function(e){ if(dragging) seek(e); });
+  plot.addEventListener('pointerup',function(){ dragging=false; });
+  plot.addEventListener('pointercancel',function(){ dragging=false; });
+  plot.addEventListener('keydown',function(e){
+    var S=snaps(), k=e.key, n=idx;
+    if(k==='ArrowRight') n=idx+1; else if(k==='ArrowLeft') n=idx-1; else if(k==='Home') n=0; else if(k==='End') n=S.length-1; else return;
+    e.preventDefault(); stop();
+    idx=Math.max(0,Math.min(S.length-1,n)); follow=(idx===S.length-1); show();
+  });
+  stack.addEventListener('click',function(e){
+    var b=e.target.closest('.tab'); if(!b) return;
+    stop(); idx=parseInt(b.getAttribute('data-i'),10); follow=(idx===snaps().length-1); show();
+  });
+  play.addEventListener('click',function(){ if(timer){ stop(); } else { startPlay(); } });
+
+  idx=Math.max(0,snaps().length-1);
+  setLabel(false);
+  full();
+  if(opts.autoplay && snaps().length>1){ idx=0; follow=false; show(); startPlay(); }
+  var api={
+    update:function(nd){ d=nd; if(follow) idx=snaps().length-1; full(); },
+    destroy:stop
+  };
+  cleanups.push(stop);
+  return api;
+}
+
+/* ---------- landing ---------- */
+var CRAFTS={
+  writing:{
+    name:'Writing', status:'Works today', chip:'good',
+    title:'A replay of every draft',
+    body:'Write in the Handproof editor and it records your revisions as you go. Readers replay the piece from the first line to the last edit, and anything you pasted in is marked.',
+    proof:['The order and pace of the writing','Cuts, rewrites and pauses','Text pasted in from somewhere else'],
+    limit:'It can’t show that you didn’t retype something an AI wrote.',
+    preview:function(){
+      return '<div class="preview"><div class="spark">'+sparkSVG(DEMO[0])+'</div><div class="preview-cap">Sample piece. Each color is one revision.</div></div>';
+    }
+  },
+  art:{
+    name:'Art', status:'Works today', chip:'good',
+    title:'The work, step by step',
+    body:'Upload your finished piece with photos or screenshots from along the way, and a project file from your drawing app if it has one. Handproof stamps each file with the server’s clock and links them together, so the order can’t be quietly rewritten. Anyone can re-check the files in their own browser.',
+    proof:['When each file reached the server, in order','That no file has changed since it was uploaded','Work-in-progress images, original files and project files'],
+    limit:'It can’t show that you didn’t trace or repaint an AI image, or that the progress shots weren’t made afterwards.',
+    preview:function(){ return fileRowsPreview([['sketch-01.png','Work in progress','first',''],['layers-v2.png','Work in progress','+3h 10m',''],['painting.zip','Project file','+3h 40m',''],['final.png','Finished work','+4h 02m','good']]); }
+  },
+  photo:{
+    name:'Photo', status:'Works today', chip:'good',
+    title:'The original, kept',
+    body:'Upload the untouched camera original next to the edited version. Camera files often carry your location, so Handproof spots it and offers to strip it before anything becomes public.',
+    proof:['The original and each edited version','When each was uploaded, and that none has changed since','Originals and finished photos side by side'],
+    limit:'It can’t show that the scene was real, or that AI didn’t alter an image before you uploaded the “original”.',
+    preview:function(){ return fileRowsPreview([['IMG_4821.jpg','Original or source file','first',''],['IMG_4821-edit.jpg','Work in progress','+25m',''],['harbor.jpg','Finished work','+31m','good']]); }
+  },
+  music:{
+    name:'Music', status:'Works today', chip:'good',
+    title:'Takes, stems and the final mix',
+    body:'Upload rough takes, stems and your project file from your music software (zipped), then the finished track. Listeners can play it and see how it came together.',
+    proof:['Rough takes and stems, in order','The project file from your music software','The finished track'],
+    limit:'It can’t show that every sound was made by a person: AI-made samples or vocals could be inside the files.',
+    preview:function(){ return fileRowsPreview([['demo-take1.wav','Work in progress','first',''],['stems.zip','Original or source file','+2d 1h',''],['session.zip','Project file','+2d 1h',''],['harbor-final.mp3','Finished work','+5d 3h','good']]); }
+  },
+  film:{
+    name:'Film', status:'Works today', chip:'good',
+    title:'Raw footage to final cut',
+    body:'Upload raw clips, your edit project (zipped) and progress cuts, then the finished film. Files can be up to 50 MB each, so short clips or lower-resolution copies work best.',
+    proof:['Raw clips and progress cuts, in order','The edit project file','The finished film'],
+    limit:'It can’t show that every shot is real footage, and it doesn’t read content credentials from files yet.',
+    preview:function(){ return fileRowsPreview([['A001_C003.mov','Original or source file','first',''],['rough-cut-v1.mp4','Work in progress','+6d',''],['edit.zip','Project file','+9d',''],['final-cut.mp4','Finished work','+10d','good']]); }
+  },
+  acting:{
+    name:'Acting', status:'Planned', chip:'',
+    title:'Every take, kept',
+    body:'Record takes in the browser with your camera. Handproof keeps every take, not just the best one, and asks for a short live prompt partway through so a pre-made or generated clip can’t stand in for you.',
+    proof:['One continuous, uncut recording per take','The full take history, including takes you didn’t use','A live prompt answered on camera'],
+    limit:'Real-time face and voice swapping can still get past a prompt like this, so it counts as evidence and not proof.',
+    preview:function(){
+      function row(n,c,ink,detail,chip,cls){ return '<div class="take"><i style="background:'+c+';border-color:'+ink+'"></i><div><b>'+n+'</b><small>'+detail+'</small></div><span class="chip '+cls+'">'+chip+'</span></div>'; }
+      return '<div class="preview">'+
+        row('Take 1',REV[0].bg,REV[0].ink,'0:48, stopped early','Not used','')+
+        row('Take 2',REV[1].bg,REV[1].ink,'1:12, one continuous recording','Not used','')+
+        row('Take 3',REV[2].bg,REV[2].ink,'2:05, one continuous recording','Kept','good')+
+        '<p class="prompt"><span>Prompt at 0:31 in take 3: say “lantern” while touching your left ear.</span><span class="chip good">Answered</span></p>'+
+        '<div class="preview-cap">Illustrative preview of a planned feature. Not built yet.</div></div>';
+    }
+  }
+};
+
+function fileRowsPreview(rows){
+  return '<div class="preview">'+rows.map(function(r){
+    return '<div class="take" style="grid-template-columns:1fr auto"><div><b>'+r[0]+'</b><small>'+r[2]+'</small></div><span class="chip '+r[3]+'">'+r[1]+'</span></div>';
+  }).join('')+'<div class="preview-cap">Illustrative sample. Each file gets a server timestamp and a checksum.</div></div>';
+}
+
+function viewLanding(){
+  document.title='Handproof';
+  var d=DEMO[0];
+  app.innerHTML=
+  '<div class="wrap hero">'+
+    '<h1>Proof that a person made it.</h1>'+
+    '<p class="lede">Handproof keeps the record of how writing, art, photos, music and films were made, so anyone can see how a piece came together instead of trusting a detector’s score.</p>'+
+    '<div class="cta-row"><a class="btn primary" href="#/write">Start writing</a><a class="btn" href="#/make">Share art, photo, music or film</a><a class="btn" href="#/browse">Browse work</a></div>'+
+    '<div id="hero"></div>'+
+    '<ul class="legend" aria-label="How to read the chart">'+
+      '<li><span class="sw line"></span>Length of the text over time</li>'+
+      '<li><span class="sw" style="background:linear-gradient(90deg,#fff 0 33%,#D9E8F8 33% 66%,#FADCE5 66%)"></span>One color for each revision</li>'+
+      '<li><span class="sw mark"></span>Text that was pasted in</li>'+
+    '</ul>'+
+  '</div>'+
+  '<section class="block wrap">'+
+    '<h2>Each kind of work leaves a different kind of record</h2>'+
+    '<p>Writing is recorded live as you type. Art, photos, music and film are made in other tools, so you upload the files from each stage and Handproof stamps them with its own clock. Acting is planned.</p>'+
+    '<div class="crafts">'+
+      '<div class="craft-tabs" role="tablist" aria-label="Crafts">'+
+        Object.keys(CRAFTS).map(function(k){
+          var c=CRAFTS[k];
+          return '<button type="button" role="tab" class="craft-tab" id="tab-'+k+'" data-craft="'+k+'" aria-controls="craft-panel" aria-selected="false"><strong>'+c.name+'</strong><span>'+c.status+'</span></button>';
+        }).join('')+
+      '</div>'+
+      '<div class="craft-panel" id="craft-panel" role="tabpanel" tabindex="0"></div>'+
+    '</div>'+
+  '</section>'+
+  '<section class="block wrap">'+
+    '<h2>What a recording can and can’t tell you</h2>'+
+    '<div class="two">'+
+      '<div><h3>It shows</h3><ul>'+
+        '<li>The order, pace and shape of the work, from first line to last.</li>'+
+        '<li>False starts, cuts and rewrites that a single paste would never leave behind.</li>'+
+        '<li>Anything brought in from outside, marked where it arrived.</li>'+
+      '</ul></div>'+
+      '<div><h3>It doesn’t show</h3><ul>'+
+        '<li>Whether someone retyped text an AI wrote.</li>'+
+        '<li>Whose ideas they were.</li>'+
+        '<li>Anything about work made outside Handproof. Pieces written without an account live in the writer’s own browser, so nobody else can check their records.</li>'+
+      '</ul></div>'+
+    '</div>'+
+  '</section>'+
+  '<div class="wrap"><div class="band"><h2>Start a draft. The recording begins with your first keystroke.</h2><a class="btn primary" href="#/write">Start writing</a></div></div>';
+
+  mountReplay(document.getElementById('hero'),{snaps:d.snapshots,series:d.series},'“'+d.title+'” by '+d.author+' (sample)',{autoplay:!prefersReducedMotion()});
+
+  var tabs=app.querySelectorAll('.craft-tab'), panel=document.getElementById('craft-panel');
+  function select(k){
+    var c=CRAFTS[k];
+    for(var i=0;i<tabs.length;i++){
+      var on=tabs[i].getAttribute('data-craft')===k;
+      tabs[i].setAttribute('aria-selected',on?'true':'false');
+      tabs[i].tabIndex=on?0:-1;
+    }
+    panel.setAttribute('aria-labelledby','tab-'+k);
+    panel.innerHTML=
+      '<span class="chip '+(c.chip||'')+'">'+c.status+'</span>'+
+      '<h3>'+c.title+'</h3>'+
+      '<p>'+c.body+'</p>'+
+      c.preview()+
+      '<p><strong>What counts as evidence</strong></p>'+
+      '<ul>'+c.proof.map(function(x){ return '<li>'+x+'</li>'; }).join('')+'</ul>'+
+      '<p class="limit">'+c.limit+'</p>';
+  }
+  var keys=Object.keys(CRAFTS);
+  Array.prototype.forEach.call(tabs,function(b){
+    b.addEventListener('click',function(){ select(b.getAttribute('data-craft')); });
+    b.addEventListener('keydown',function(e){
+      var i=keys.indexOf(b.getAttribute('data-craft')), n=i;
+      if(e.key==='ArrowDown'||e.key==='ArrowRight') n=(i+1)%keys.length;
+      else if(e.key==='ArrowUp'||e.key==='ArrowLeft') n=(i+keys.length-1)%keys.length;
+      else return;
+      e.preventDefault(); select(keys[n]); document.getElementById('tab-'+keys[n]).focus();
+    });
+  });
+  select('writing');
+}
+
+/* ---------- editor ---------- */
+function viewEditor(){
+  document.title='Write · Handproof';
+  var fresh=function(){ return {title:'',text:'',snaps:[],series:[],backspaces:0,pasted:0,pasteEvents:0,clock:0,last:0,active:0,lastSnapText:'',pendingPaste:0,mode:null,cloud:null,outSeries:[],outSnaps:[],sentClock:0}; };
+  if(!draft) draft=fresh();
+  if(!Array.isArray(draft.outSeries)) draft.outSeries=[];
+  if(!Array.isArray(draft.outSnaps)) draft.outSnaps=[];
+  if(!draft.sentClock) draft.sentClock=0;
+  var lostCloud=false;
+  if(draft.mode==='cloud' && (!cloudOn() || !user || (draft.cloud && draft.cloud.uid!==user.id))){
+    /* the account this draft was recording to isn't signed in here, so it can only finish as a local piece */
+    draft.mode='local'; draft.cloud=null; draft.outSeries=[]; draft.outSnaps=[]; lostCloud=true;
+  }
+  app.innerHTML=
+  '<div class="wrap narrow">'+
+    '<h1>Write</h1>'+
+    (restoredNotice?'<p class="notice" id="restored">Restored your unfinished draft from last time.</p>':'')+
+    '<p class="notice" id="where" hidden></p>'+
+    '<label for="t">Title</label>'+
+    '<input class="title-input" id="t" type="text" maxlength="120" placeholder="Untitled">'+
+    '<label for="x">Text</label>'+
+    '<textarea class="draft" id="x" placeholder="Start typing. The recording begins with your first keystroke."></textarea>'+
+    '<div class="stats" id="stats">'+
+      '<div class="stat"><b id="s-time">0s</b><span>active time</span></div>'+
+      '<div class="stat"><b id="s-words">0</b><span>words</span></div>'+
+      '<div class="stat"><b id="s-snaps">0</b><span>snapshots</span></div>'+
+      '<div class="stat"><b id="s-del">0</b><span>deletions</span></div>'+
+      '<div class="stat"><b id="s-paste">0</b><span>characters pasted</span></div>'+
+    '</div>'+
+    '<h2>Recording so far</h2>'+
+    '<div id="live"></div>'+
+    '<div id="vispick" hidden>'+visPickerHTML('evis','public')+'</div>'+
+    '<div class="actions">'+
+      '<button class="btn primary" id="publish" type="button">Publish</button>'+
+      '<button class="btn" id="discard" type="button">Discard draft</button>'+
+      '<span class="muted" id="saved" aria-live="polite"></span>'+
+    '</div>'+
+  '</div>';
+  restoredNotice=false;
+
+  var t=document.getElementById('t'), x=document.getElementById('x'), pub=document.getElementById('publish');
+  var savedEl=document.getElementById('saved');
+  t.value=draft.title; x.value=draft.text;
+  var rp=mountReplay(document.getElementById('live'),{snaps:draft.snaps,series:draft.series},'Your draft');
+  var debounce=null, saveTimer=null, flushTimer=null, flushing=null, creating=null;
+  var whereEl=document.getElementById('where');
+
+  function effMode(){ return draft.mode || ((cloudOn() && user && !draft.series.length && !draft.text)?'cloud':'local'); }
+  function showWhere(){
+    var m=effMode(), h='';
+    if(m==='cloud') h='Signed in as '+esc((user&&user.email)||'you')+'. This piece is being recorded to your account and gets a link when you publish. The public replay shows every version, including text you delete, so don’t type anything you wouldn’t want shown.';
+    else if(lostCloud) h='This draft was recording to an account that isn’t signed in here, so it will publish to this browser only.';
+    else if(cloudOn() && draft.series.length && user) h='This draft started before you signed in, so it will publish to this browser only. Start a new draft to record to your account.';
+    else if(cloudOn()) h='You’re not signed in. This piece will stay in this browser. <a href="#/account">Sign in</a> before you start to get a public link and a server-side record.';
+    whereEl.innerHTML=h; whereEl.hidden=!h;
+    var vp=document.getElementById('vispick'); if(vp) vp.hidden=(m!=='cloud');
+  }
+  function setStatus(s){ savedEl.textContent=s; }
+  function ensurePiece(){
+    if(draft.cloud) return Promise.resolve(draft.cloud.id);
+    if(!creating){
+      creating=rpc('create_piece',{p_title:draft.title||'Untitled'}).then(function(id){
+        draft.cloud={id:id,uid:user.id}; creating=null; store.set(DRAFT_KEY,draft); return id;
+      },function(e){ creating=null; throw e; });
+    }
+    return creating;
+  }
+  function doFlush(){
+    if(!draft || draft.mode!=='cloud') return null;
+    if(!draft.outSeries.length && !draft.outSnaps.length) return null;
+    return ensurePiece().then(function(id){
+      var s=draft.outSeries.splice(0), n=draft.outSnaps.splice(0);
+      var claimed=Math.max(0,Math.round(draft.clock-draft.sentClock)), prevSent=draft.sentClock;
+      draft.sentClock=draft.clock;
+      return rpc('append_batch',{p_piece:id,p_claimed_ms:claimed,p_series:s,p_snapshots:n,p_title:draft.title||null}).then(function(r){
+        if(draft) store.set(DRAFT_KEY,draft); return r;
+      },function(e){
+        draft.outSeries=s.concat(draft.outSeries); draft.outSnaps=n.concat(draft.outSnaps); draft.sentClock=prevSent;
+        throw e;
+      });
+    });
+  }
+  function flush(){
+    var p=(flushing||Promise.resolve()).then(doFlush);
+    flushing=p.then(function(){ setStatus('Saved to your account'); },function(){
+      setStatus('Couldn’t reach the server. Your writing is kept in this browser and will be sent when the connection is back.');
+      scheduleFlush(10000);
+    });
+    return p;
+  }
+  function scheduleFlush(ms){
+    if(draft && draft.mode==='cloud'){ clearTimeout(flushTimer); flushTimer=setTimeout(function(){ flush().catch(function(){}); },ms); }
+  }
+
+  function refresh(){
+    document.getElementById('s-time').textContent=fmtDur(draft.active/1000);
+    document.getElementById('s-words').textContent=wordCount(draft.text);
+    document.getElementById('s-snaps').textContent=draft.snaps.length;
+    document.getElementById('s-del').textContent=draft.backspaces;
+    var sp=document.getElementById('s-paste');
+    sp.textContent=draft.pasted; sp.className=draft.pasted>0?'bad':'';
+    pub.disabled=!draft.text.trim();
+  }
+  function persist(){
+    clearTimeout(saveTimer);
+    saveTimer=setTimeout(function(){
+      var ok=store.set(DRAFT_KEY,draft);
+      savedEl.textContent=ok?(draft&&draft.mode==='cloud'?((draft.outSeries.length||draft.outSnaps.length)?'Saving to your account…':'Saved to your account'):'Draft saved'):'Couldn’t save the draft because browser storage is full. Publish or export your pieces to free up space.';
+    },700);
+  }
+  function snap(paste){
+    if(draft.text===draft.lastSnapText && !paste) return;
+    draft.lastSnapText=draft.text;
+    var sn={t:Math.round(draft.clock/1000),text:draft.text,paste:paste||0};
+    draft.snaps.push(sn);
+    if(draft.mode==='cloud'){ draft.outSnaps.push({t:sn.t,text:sn.text,paste:sn.paste}); if(draft.outSnaps.length>=5) flush().catch(function(){}); else scheduleFlush(8000); }
+    draft.snaps=sampleDown(draft.snaps);
+    rp.update({snaps:draft.snaps,series:draft.series});
+    refresh(); persist();
+  }
+  function rec(pt){
+    draft.series.push(pt);
+    if(draft.mode==='cloud'){
+      draft.outSeries.push(pt);
+      if(draft.outSeries.length>=300) flush().catch(function(){}); else scheduleFlush(8000);
+    }
+  }
+
+  t.addEventListener('input',function(){ draft.title=t.value; persist(); });
+  x.addEventListener('paste',function(e){
+    var cd=e.clipboardData, s='';
+    try{ s=cd?cd.getData('text'):''; }catch(err){}
+    draft.pendingPaste=s.length;
+  });
+  x.addEventListener('drop',function(e){
+    var dt=e.dataTransfer, s='';
+    try{ s=dt?dt.getData('text'):''; }catch(err){}
+    draft.pendingPaste=s.length;
+  });
+  x.addEventListener('input',function(e){
+    var now=Date.now(), v=x.value, it=e.inputType||'', prevLen=draft.text.length;
+    if(!draft.mode){
+      draft.mode=(cloudOn() && user && !draft.series.length && !draft.text)?'cloud':'local';
+      showWhere();
+    }
+    if(draft.last){
+      var gap=now-draft.last;
+      draft.clock+=Math.min(gap,60000);
+      if(gap<30000) draft.active+=gap;
+    } else if(!draft.series.length){
+      rec([0,0,0]);
+    }
+    draft.last=now;
+    if(it.indexOf('delete')===0) draft.backspaces++;
+    var added=v.length-prevLen, pasteChars=0;
+    if(draft.pendingPaste>0){ pasteChars=draft.pendingPaste; }
+    else if(it==='insertFromPaste'||it==='insertFromDrop'||it==='insertFromYank'){ pasteChars=Math.max(added,0); }
+    else if(added>30){ pasteChars=added; }   /* a big chunk arriving in one go that was not a keystroke */
+    draft.pendingPaste=0;
+    if(pasteChars>0){ draft.pasted+=pasteChars; draft.pasteEvents++; }
+    draft.text=v;
+    rec([draft.clock,v.length,pasteChars]);
+    if(draft.series.length>2400) draft.series=capSeries(draft.series);
+    clearTimeout(debounce);
+    if(pasteChars>0){ snap(pasteChars); }
+    else{
+      debounce=setTimeout(function(){ snap(0); },1200);
+      refresh(); persist();
+    }
+  });
+
+  document.getElementById('discard').addEventListener('click',function(){
+    if(draft.text.trim() && !confirm('Discard this draft and its recording?')) return;
+    clearTimeout(debounce); clearTimeout(saveTimer); clearTimeout(flushTimer);
+    if(draft.mode==='cloud' && draft.cloud && cloudOn()) rpc('delete_piece',{p_piece:draft.cloud.id}).catch(function(){});
+    draft=null; store.remove(DRAFT_KEY);
+    location.hash='#/';
+  });
+  pub.addEventListener('click',function(){
+    if(!draft.text.trim()) return;
+    clearTimeout(debounce); clearTimeout(saveTimer); clearTimeout(flushTimer);
+    snap(0);
+    if(draft.mode==='cloud'){
+      pub.disabled=true; setStatus('Publishing…');
+      var title=(draft.title||'').trim()||'Untitled';
+      flush().then(function(){
+        if(!draft.cloud) throw new Error('nothing was recorded');
+        return rpc('set_visibility',{p_kind:'piece',p_id:draft.cloud.id,p_value:visValue('evis')}).then(function(){ return rpc('publish_piece',{p_piece:draft.cloud.id,p_title:title}); });
+      }).then(function(){
+        var id=draft.cloud.id;
+        draft=null; store.remove(DRAFT_KEY);
+        location.hash='#/p/'+encodeURIComponent(id);
+      },function(err){
+        pub.disabled=false;
+        setStatus('Couldn’t publish: '+((err&&err.message)||'unknown error')+'. Your draft is still here. Try again in a moment.');
+      });
+      return;
+    }
+    var S=draft.snaps, last=S[S.length-1];
+    if(!last || last.text!==draft.text) S.push({t:Math.round(draft.clock/1000),text:draft.text,paste:0});
+    var flat=draft.text.trim().replace(/\s+/g,' ');
+    var piece={
+      id:'p_'+Date.now().toString(36)+Math.random().toString(36).slice(2,6),
+      title:(draft.title||'').trim()||'Untitled',
+      author:userName||'You',
+      excerpt:flat.slice(0,150)+(flat.length>150?'…':''),
+      snapshots:S, series:capSeries(draft.series),
+      wordCount:wordCount(draft.text),
+      backspaces:draft.backspaces, pasted:draft.pasted, pasteEvents:draft.pasteEvents,
+      activeSeconds:Math.round(draft.active/1000),
+      createdAt:Date.now(), demo:false
+    };
+    pieces.unshift(piece);
+    if(!store.set(PIECES_KEY,pieces)){
+      pieces.shift();
+      alert('Couldn’t publish because browser storage is full. Export your pieces from the Profile page or delete older ones, then publish again.');
+      return;
+    }
+    draft=null; store.remove(DRAFT_KEY);
+    location.hash='#/piece/'+encodeURIComponent(piece.id);
+  });
+  cleanups.push(function(){
+    clearTimeout(debounce); clearTimeout(saveTimer); clearTimeout(flushTimer);
+    if(draft){
+      store.set(DRAFT_KEY,draft);
+      if(draft.mode==='cloud') flush().catch(function(){});
+    }
+  });
+  showWhere();
+  if(draft.mode==='cloud' && (draft.outSeries.length||draft.outSnaps.length)) scheduleFlush(1000);
+  refresh();
+}
+
+/* ---------- browse ---------- */
+function pasteChip(p){ return p.pasted>0?'<span class="chip flag">'+chars(p.pasted)+' pasted</span>':'<span class="chip good">No pasted text</span>'; }
+function tileHTML(p){
+  return '<a class="tile" href="#/'+(p.cloud?'p':'piece')+'/'+encodeURIComponent(p.id)+'">'+
+    '<div class="spark">'+sparkSVG(p)+'</div>'+
+    '<div class="tile-body"><h3>'+esc(p.title)+'</h3><p class="by">by '+esc(p.author)+'</p>'+
+    '<div class="facts"><span>'+fmtDur(p.activeSeconds)+' of writing</span><span>'+plural(p.snapCount||p.snapshots.length,'snapshot')+'</span>'+pasteChip(p)+
+    (p.suspect>0?'<span class="chip flag">Timing flagged</span>':'')+(p.demo?'<span class="chip">Sample</span>':'')+'</div></div></a>';
+}
+function subnavHTML(cur){
+  return '<nav class="subnav" aria-label="Browse by"><a href="#/browse"'+(cur==='work'?' aria-current="page"':'')+'>Work</a><a href="#/artists"'+(cur==='artists'?' aria-current="page"':'')+'>Artists</a></nav>';
+}
+var ARTIST_KINDS=[['writing','writing'],['art','art'],['photo','photo'],['music','music'],['film','film']];
+function artistCardHTML(c){
+  var chips=ARTIST_KINDS.filter(function(k){ return c[k[0]]>0; }).map(function(k){ return '<span class="chip">'+c[k[0]]+' '+k[1]+'</span>'; }).join('');
+  return '<a class="artist" href="#/w/'+encodeURIComponent(c.id)+'"><h3>'+esc(c.name||'Someone')+'</h3>'+(c.bio?'<p>'+esc(c.bio)+(c.bio.length>=140?'…':'')+'</p>':'')+'<span class="chips">'+chips+'</span></a>';
+}
+function viewArtists(){
+  document.title='Artists · Handproof';
+  var KINDS_ALL=[['all','All'],['writing','Writing'],['art','Art'],['photo','Photo'],['music','Music'],['film','Film']];
+  app.innerHTML=
+  '<div class="wrap">'+
+    '<h1>Artists</h1>'+
+    subnavHTML('artists')+
+    '<div class="filters">'+
+      '<span class="kind-filters" role="group" aria-label="Kind of work">'+
+        KINDS_ALL.map(function(k){ return '<button type="button" class="chip fbtn'+(k[0]==='all'?' on':'')+'" data-k="'+k[0]+'" aria-pressed="'+(k[0]==='all'?'true':'false')+'">'+k[1]+'</button>'; }).join('')+
+      '</span>'+
+      '<label class="sr" for="f">Filter by name</label>'+
+      '<input id="f" type="search" placeholder="Filter by name">'+
+    '</div>'+
+    '<div class="grid" id="rows"></div>'+
+    '<p class="empty-state" id="none" hidden></p>'+
+    '<p><button class="btn" type="button" id="more" hidden>Show more</button></p>'+
+  '</div>';
+  var rows=document.getElementById('rows'), none=document.getElementById('none'), more=document.getElementById('more');
+  var alive=true, list=[], curK='all', curQ='', loading=false, done=false, gen=0, PAGE=24;
+  cleanups.push(function(){ alive=false; });
+  if(!cloudOn()){ none.hidden=false; none.textContent='Artist pages only work on a site that has accounts turned on.'; return; }
+  function draw(){
+    var q=curQ.toLowerCase().trim();
+    var shown=list.filter(function(c){ return !q || String(c.name||'').toLowerCase().indexOf(q)>=0; });
+    rows.innerHTML=shown.map(artistCardHTML).join('');
+    none.hidden=shown.length>0 || loading;
+    if(!shown.length) none.textContent=q?'Nobody loaded matches that name. Clear the filter or show more.':(curK==='all'?'No artists yet. Publish some work and be the first.':'Nobody has shared this kind of work yet.');
+    more.hidden=done;
+  }
+  function load(reset){
+    if(loading) return;
+    if(reset){ list=[]; done=false; gen++; }
+    loading=true; var my=gen; more.disabled=true;
+    rpc('list_creators',{p_kind:curK==='all'?null:curK,p_limit:PAGE,p_offset:list.length}).then(function(r){
+      if(!alive||my!==gen) return;
+      loading=false; more.disabled=false; r=r||[]; list=list.concat(r); if(r.length<PAGE) done=true; draw();
+    },function(){
+      if(!alive||my!==gen) return;
+      loading=false; more.disabled=false; none.hidden=false; none.textContent='Couldn’t load artists right now. Try again in a moment.';
+    });
+  }
+  document.getElementById('f').addEventListener('input',function(e){ curQ=e.target.value; draw(); });
+  more.addEventListener('click',function(){ load(false); });
+  app.querySelector('.kind-filters').addEventListener('click',function(e){
+    var b=e.target.closest('.fbtn'); if(!b) return;
+    curK=b.getAttribute('data-k'); loading=false;
+    Array.prototype.forEach.call(app.querySelectorAll('.fbtn'),function(x){ var on=x===b; x.classList.toggle('on',on); x.setAttribute('aria-pressed',on?'true':'false'); });
+    load(true);
+  });
+  load(true);
+}
+
+function viewBrowse(){
+  document.title='Browse · Handproof';
+  var KINDS_ALL=[['all','All'],['writing','Writing'],['art','Art'],['photo','Photo'],['music','Music'],['film','Film']];
+  app.innerHTML=
+  '<div class="wrap">'+
+    '<h1>Browse</h1>'+
+    subnavHTML('work')+
+    '<div class="filters">'+
+      '<span class="kind-filters" role="group" aria-label="Kind of work">'+
+        KINDS_ALL.map(function(k){ return '<button type="button" class="chip fbtn'+(k[0]==='all'?' on':'')+'" data-k="'+k[0]+'" aria-pressed="'+(k[0]==='all'?'true':'false')+'">'+k[1]+'</button>'; }).join('')+
+        '<span class="chip off" title="Planned">Acting, planned</span>'+
+      '</span>'+
+      '<label class="sr" for="f">Filter by title or author</label>'+
+      '<input id="f" type="search" placeholder="Filter by title or author">'+
+    '</div>'+
+    '<div class="grid" id="rows"></div>'+
+    '<p class="empty-state" id="none" hidden>Nothing matches that filter. Clear it to see everything.</p>'+
+  '</div>';
+  var rows=document.getElementById('rows'), none=document.getElementById('none');
+  var remote=[], works=[], alive=true, curQ='', curK='all';
+  cleanups.push(function(){ alive=false; });
+  if(cloudOn()){
+    rpc('list_public_pieces',{p_limit:50,p_offset:0}).then(function(list){
+      if(!alive) return;
+      remote=(list||[]).map(cloudPiece); fill(curQ);
+    },function(){
+      if(!alive) return;
+      none.hidden=false; none.textContent='Couldn’t load published pieces right now. Samples and pieces in this browser are shown below.';
+    });
+    rpc('list_public_works',{p_limit:50,p_offset:0}).then(function(list){
+      if(!alive) return;
+      works=list||[]; fill(curQ);
+    },function(){});
+  }
+  function fill(q){
+    q=(q||'').toLowerCase().trim(); curQ=q;
+    var text=(curK==='all'||curK==='writing')?remote.concat(allPieces()):[];
+    var wk=curK==='writing'?[]:works.filter(function(w){ return curK==='all'||w.kind===curK; });
+    var hit=function(t,a){ return !q || (t+' '+a).toLowerCase().indexOf(q)>=0; };
+    text=text.filter(function(p){ return hit(p.title,p.author); });
+    wk=wk.filter(function(w){ return hit(w.title,w.author); });
+    rows.innerHTML=wk.map(workTileHTML).join('')+text.map(tileHTML).join('');
+    hydrateImages(rows);
+    none.textContent=(curK==='all'||curK==='writing')?'Nothing matches that filter. Clear it to see everything.':'Nothing here yet for this kind of work. Be the first to share one.';
+    none.hidden=(wk.length+text.length)>0;
+  }
+  document.getElementById('f').addEventListener('input',function(e){ fill(e.target.value); });
+  app.querySelector('.kind-filters').addEventListener('click',function(e){
+    var b=e.target.closest('.fbtn'); if(!b) return;
+    curK=b.getAttribute('data-k');
+    Array.prototype.forEach.call(app.querySelectorAll('.fbtn'),function(x){ var on=x===b; x.classList.toggle('on',on); x.setAttribute('aria-pressed',on?'true':'false'); });
+    fill(curQ);
+  });
+  fill('');
+}
+
+function viewPiece(id){
+  var p=findPiece(id);
+  if(!p){
+    document.title='Not found · Handproof';
+    app.innerHTML='<div class="wrap narrow"><h1>That piece isn’t here</h1><p>It may have been deleted, or it was saved in a different browser.</p><p><a class="btn" href="#/browse">Browse work</a></p></div>';
+    return;
+  }
+  document.title=p.title+' · Handproof';
+  var last=p.snapshots.length?p.snapshots[p.snapshots.length-1].text:'';
+  app.innerHTML=
+  '<div class="wrap">'+
+    '<h1>'+esc(p.title)+'</h1>'+
+    '<p class="byline">by '+esc(p.author)+(p.createdAt?', published '+fmtDate(p.createdAt):'')+'</p>'+
+    (p.demo?'<p><span class="chip">Sample piece, made up</span></p>':'')+
+    (p.pasted>0
+      ? '<p class="banner bad">Pasted text: about '+chars(p.pasted)+' in '+plural(p.pasteEvents,'paste')+'. Each one is marked on the chart.</p>'
+      : '<p class="banner good">No pasted text was recorded for this piece.</p>')+
+    '<div class="stats">'+
+      '<div class="stat"><b>'+fmtDur(p.activeSeconds)+'</b><span>active writing time</span></div>'+
+      '<div class="stat"><b>'+p.snapshots.length+'</b><span>snapshots</span></div>'+
+      '<div class="stat"><b>'+p.backspaces+'</b><span>deletions</span></div>'+
+      '<div class="stat"><b>'+wordCount(last)+'</b><span>words</span></div>'+
+    '</div>'+
+    '<div id="rp"></div>'+
+    '<p style="margin-top:18px"><button class="btn" type="button" id="copy">Copy final text</button> <span class="muted" id="copied" aria-live="polite"></span></p>'+
+    '<div class="gap"></div>'+
+  '</div>';
+  mountReplay(document.getElementById('rp'),{snaps:p.snapshots,series:p.series},'Replay');
+  document.getElementById('copy').addEventListener('click',function(){
+    var el=document.getElementById('copied');
+    function done(ok){ el.textContent=ok?'Copied':'Couldn’t copy. Select the text in the replay and copy it by hand.'; }
+    try{
+      if(navigator.clipboard && navigator.clipboard.writeText){ navigator.clipboard.writeText(last).then(function(){ done(true); },function(){ done(false); }); return; }
+    }catch(e){}
+    done(false);
+  });
+}
+
+/* ---------- public piece (served from the server record) ---------- */
+function copyText(text,el,okMsg){
+  function done(ok){ el.textContent=ok?okMsg:'Couldn’t copy. Select it and copy it by hand.'; }
+  try{
+    if(navigator.clipboard && navigator.clipboard.writeText){ navigator.clipboard.writeText(text).then(function(){ done(true); },function(){ done(false); }); return; }
+  }catch(e){}
+  done(false);
+}
+function viewPublic(id){
+  document.title='Handproof';
+  var alive=true; cleanups.push(function(){ alive=false; });
+  function missing(msg){
+    document.title='Not found · Handproof';
+    app.innerHTML='<div class="wrap narrow"><h1>That piece isn’t here</h1><p>'+esc(msg)+'</p><p><a class="btn" href="#/browse">Browse work</a></p></div>';
+  }
+  if(!cloudOn()){ missing('Public links only work on a site that has accounts turned on.'); return; }
+  app.innerHTML='<div class="wrap narrow"><p class="muted" role="status">Loading…</p></div>';
+  rpc('get_public_piece',{p_piece:id}).then(function(d){
+    if(!alive) return;
+    if(!d){ missing('It may have been deleted, or it was never published.'); return; }
+    var snaps=(d.replay&&d.replay.snapshots)||[], series=(d.replay&&d.replay.series)||[];
+    var last=snaps.length?snaps[snaps.length-1].text:'', v=d.verification||{};
+    var pasted=Number(d.pasted_chars)||0, susp=v.suspect_batches||0;
+    document.title=d.title+' · Handproof';
+    var ver;
+    if(v.chain_ok!==true){
+      ver='<p class="banner bad">The stored record no longer matches its checksums. Don’t rely on this timeline.</p>';
+    }else if(susp>0){
+      ver='<p class="banner bad">The record is intact, but '+plural(susp,'batch')+' of '+v.batches+' claimed more writing time than the server’s clock allowed. Treat the timeline with caution.</p>';
+    }else{
+      ver='<p class="banner good">The record is intact. The server received this piece in '+plural(v.batches,'batch')+' over '+fmtDur(v.server_span_seconds||0)+' by its own clock, and every checksum still matches.</p>';
+    }
+    app.innerHTML=
+    '<div class="wrap">'+
+      '<h1>'+esc(d.title)+'</h1>'+
+      '<p class="byline">by '+(d.author_id?'<a href="#/w/'+encodeURIComponent(d.author_id)+'">'+esc(d.author)+'</a>':esc(d.author))+', published '+fmtDate(Date.parse(d.published_at))+'</p>'+
+      visNoteHTML(d.visibility)+
+      (pasted>0
+        ? '<p class="banner bad">Pasted text: about '+chars(pasted)+' in '+plural(d.paste_events,'paste')+'. Each one is marked on the chart.</p>'
+        : '<p class="banner good">No pasted text was recorded for this piece.</p>')+
+      '<div class="stats">'+
+        '<div class="stat"><b>'+fmtDur(d.active_seconds)+'</b><span>active writing time</span></div>'+
+        '<div class="stat"><b>'+snaps.length+'</b><span>snapshots</span></div>'+
+        '<div class="stat"><b>'+d.deletions+'</b><span>deletions</span></div>'+
+        '<div class="stat"><b>'+d.word_count+'</b><span>words</span></div>'+
+      '</div>'+
+      '<div id="rp"></div>'+
+      '<div class="panel verify" id="verify">'+
+        '<h2>Server record</h2>'+ver+
+        '<dl class="facts-list">'+
+          '<dt>Received in</dt><dd>'+plural(v.batches||0,'batch')+'</dd>'+
+          '<dt>Fingerprint</dt><dd class="fp" title="'+esc(v.head_hash||'')+'">'+esc((v.head_hash||'').slice(0,16))+'…</dd>'+
+        '</dl>'+
+        '<p class="muted">The server stamped every batch with its own clock and chained the checksums, so changing an earlier batch breaks the chain. It can’t show whether someone retyped text from somewhere else, or whose ideas these were.</p>'+
+      '</div>'+
+      '<p style="margin-top:18px"><button class="btn" type="button" id="copy">Copy final text</button> <button class="btn" type="button" id="link">Copy link to this page</button> <span class="muted" id="copied" aria-live="polite"></span></p>'+
+      (d.mine?ownerVisHTML(d):'')+
+      '<div id="fb" class="feedback"></div>'+
+      '<div class="report-box">'+
+        '<button class="linkbtn" type="button" id="reportopen" aria-expanded="false" aria-controls="reportform">Report this piece</button>'+
+        '<form id="reportform" hidden novalidate>'+
+          '<label for="rr">What’s wrong with it?</label>'+
+          '<select id="rr">'+
+            '<option value="ai_or_retyped">Written by AI, or AI text retyped by hand</option>'+
+            '<option value="copyright">Copied from someone else</option>'+
+            '<option value="harassment">Harassment or hate</option>'+
+            '<option value="illegal">Illegal or dangerous</option>'+
+            '<option value="spam">Spam</option>'+
+            '<option value="other">Something else</option>'+
+          '</select>'+
+          '<label for="rdet">Details <span class="muted">(optional, up to 1,000 characters)</span></label>'+
+          '<textarea id="rdet" maxlength="1000"></textarea>'+
+          '<div class="actions" style="margin-bottom:10px"><button class="btn primary" type="submit" id="rsend">Send report</button> <button class="btn" type="button" id="rcancel">Cancel</button></div>'+
+        '</form>'+
+        '<p class="muted" id="rmsg" aria-live="polite"></p>'+
+      '</div>'+
+      '<div class="gap"></div>'+
+    '</div>';
+    mountReplay(document.getElementById('rp'),{snaps:snaps,series:series},'Replay');
+    setRobots(d.visibility==='unlisted'); wireOwnerVis('piece',d.id,function(){ return alive; });
+    mountFeedback(document.getElementById('fb'),'piece',d.id,function(){ return alive; });
+    var c=document.getElementById('copied');
+    document.getElementById('copy').addEventListener('click',function(){ copyText(last,c,'Copied the text'); });
+    document.getElementById('link').addEventListener('click',function(){ copyText(location.href,c,'Copied the link'); });
+    var rf=document.getElementById('reportform'), ro=document.getElementById('reportopen'), rm=document.getElementById('rmsg');
+    function toggle(open){ rf.hidden=!open; ro.setAttribute('aria-expanded',open?'true':'false'); if(open) document.getElementById('rr').focus(); }
+    ro.addEventListener('click',function(){ rm.textContent=''; toggle(rf.hidden); });
+    document.getElementById('rcancel').addEventListener('click',function(){ toggle(false); ro.focus(); });
+    rf.addEventListener('submit',function(e){
+      e.preventDefault();
+      var send=document.getElementById('rsend'); send.disabled=true; rm.textContent='Sending…';
+      rpc('report_piece',{p_piece:d.id,p_reason:document.getElementById('rr').value,p_details:document.getElementById('rdet').value}).then(function(){
+        if(!alive) return;
+        toggle(false); document.getElementById('rdet').value=''; send.disabled=false;
+        rm.textContent='Thanks. Reports are reviewed, and pieces that break the rules are removed.';
+      },function(err){
+        if(!alive) return;
+        send.disabled=false;
+        rm.textContent=/too many reports/.test(err.message)?'You’ve sent a lot of reports today. Try again tomorrow.':'Couldn’t send the report. Try again in a moment.';
+      });
+    });
+  },function(){
+    if(!alive) return;
+    missing('It may have been deleted, or the server couldn’t be reached. Try again in a moment.');
+  });
+}
+
+/* ---------- account ---------- */
+function viewAccount(){
+  document.title='Account · Handproof';
+  var alive=true; cleanups.push(function(){ alive=false; });
+  if(!cloudOn()){
+    app.innerHTML='<div class="wrap narrow"><h1>Accounts aren’t turned on</h1><p>This copy of Handproof is running in this browser only, so pieces can’t get public links yet.</p></div>';
+    return;
+  }
+  if(!user){
+    app.innerHTML=
+    '<div class="wrap narrow">'+
+      '<h1 id="ah">Sign in</h1>'+
+      '<p>With an account, what you write is recorded on Handproof’s server as you go, and a published piece gets a public link.</p>'+
+      '<form id="af" novalidate>'+
+        '<div class="only-up" hidden><label for="dn">Name shown on your pieces</label>'+
+        '<input class="title-input small" id="dn" type="text" maxlength="60" autocomplete="name"></div>'+
+        '<label for="em">Email</label>'+
+        '<input class="title-input small" id="em" type="email" autocomplete="email" required>'+
+        '<label for="pw">Password <span class="muted">(at least 8 characters)</span></label>'+
+        '<input class="title-input small" id="pw" type="password" autocomplete="current-password">'+
+        '<div class="only-in actions" style="margin-bottom:6px">'+
+          '<button class="btn primary" id="signin" type="submit">Sign in</button>'+
+          '<button class="linkbtn" id="forgot" type="button">Forgot password</button>'+
+          '<button class="linkbtn" id="magic" type="button">Email me a sign-in link</button>'+
+        '</div>'+
+        '<div class="only-up" hidden>'+
+          '<label class="check" for="tos"><input type="checkbox" id="tos"> <span>I’m at least 16 and I agree to the <a href="#/terms">Terms</a> and the <a href="#/privacy">Privacy policy</a>.</span></label>'+
+          '<div class="actions" style="margin-top:14px"><button class="btn primary" id="signup" type="button">Create account</button></div>'+
+        '</div>'+
+        '<p class="muted" id="amsg" role="status" aria-live="polite"></p>'+
+        '<p class="only-in">New here? <button class="linkbtn" id="modeup" type="button">Create an account</button></p>'+
+        '<p class="only-up" hidden>Already have an account? <button class="linkbtn" id="modein" type="button">Sign in</button></p>'+
+      '</form>'+
+    '</div>';
+    var em=document.getElementById('em'), pw=document.getElementById('pw'), dn=document.getElementById('dn'), msg=document.getElementById('amsg');
+    function say(t){ msg.textContent=t; }
+    function setMode(up){
+      Array.prototype.forEach.call(document.querySelectorAll('#af .only-up'),function(el){ el.hidden=!up; });
+      Array.prototype.forEach.call(document.querySelectorAll('#af .only-in'),function(el){ el.hidden=up; });
+      document.getElementById('ah').textContent=up?'Create account':'Sign in';
+      document.title=(up?'Create account':'Sign in')+' · Handproof';
+      pw.setAttribute('autocomplete',up?'new-password':'current-password');
+      say('');
+    }
+    document.getElementById('modeup').addEventListener('click',function(){ setMode(true); dn.focus(); });
+    document.getElementById('modein').addEventListener('click',function(){ setMode(false); em.focus(); });
+    function need(pass){
+      if(!/^\S+@\S+\.\S+$/.test(em.value.trim())){ say('Enter a valid email address.'); em.focus(); return false; }
+      if(pass && pw.value.length<8){ say('Use a password of at least 8 characters.'); pw.focus(); return false; }
+      return true;
+    }
+    function busy(b){ ['signin','signup','magic','forgot'].forEach(function(i){ var el=document.getElementById(i); if(el) el.disabled=b; }); }
+    function run(p,done){
+      busy(true); say('Working…');
+      Promise.resolve(p).then(function(r){
+        if(!alive) return; busy(false);
+        if(r&&r.error){
+          var er=r.error;
+          say((er.status>=500||/retryable|fetch|network/i.test((er.name||'')+' '+(er.message||'')))
+            ? 'Couldn’t reach the server. Check your connection and try again.'
+            : (er.message||'That didn’t work. Try again.'));
+          return;
+        }
+        done(r&&r.data);
+      },function(){ if(!alive) return; busy(false); say('Couldn’t reach the server. Check your connection and try again.'); });
+    }
+    document.getElementById('af').addEventListener('submit',function(e){
+      e.preventDefault(); if(!need(true)) return;
+      run(sb.auth.signInWithPassword({email:em.value.trim(),password:pw.value}),function(){ say('Signed in.'); });
+    });
+    document.getElementById('signup').addEventListener('click',function(){
+      if(!need(true)) return;
+      if(!document.getElementById('tos').checked){ say('Tick the box to confirm you’re 16 or older and agree to the Terms and Privacy policy.'); document.getElementById('tos').focus(); return; }
+      run(sb.auth.signUp({email:em.value.trim(),password:pw.value,options:{data:{display_name:dn.value.trim(),accepted_terms:TERMS_VERSION},emailRedirectTo:location.href.split('#')[0]}}),function(d){
+        if(d&&d.session) say('Account created. You’re signed in.');
+        else say('Check your email to confirm your account, then come back here and sign in.');
+      });
+    });
+    document.getElementById('magic').addEventListener('click',function(){
+      if(!need(false)) return;
+      run(sb.auth.signInWithOtp({email:em.value.trim(),options:{shouldCreateUser:false,emailRedirectTo:location.href.split('#')[0]}}),function(){ say('If there’s an account for that email, a sign-in link is on its way.'); });
+    });
+    document.getElementById('forgot').addEventListener('click',function(){
+      if(!need(false)) return;
+      run(sb.auth.resetPasswordForEmail(em.value.trim(),{redirectTo:location.href.split('#')[0]}),function(){ say('If there’s an account for that email, a link to reset the password is on its way.'); });
+    });
+    return;
+  }
+  if(recovering){
+    app.innerHTML=
+    '<div class="wrap narrow"><h1>Choose a new password</h1>'+
+      '<form id="rf" novalidate><label for="npw">New password <span class="muted">(at least 8 characters)</span></label>'+
+      '<input class="title-input small" id="npw" type="password" autocomplete="new-password">'+
+      '<div class="actions"><button class="btn primary" id="rsave" type="submit">Save password</button></div>'+
+      '<p class="muted" id="rmsg2" role="status" aria-live="polite"></p></form></div>';
+    document.getElementById('rf').addEventListener('submit',function(e){
+      e.preventDefault();
+      var m=document.getElementById('rmsg2'), v=document.getElementById('npw').value;
+      if(v.length<8){ m.textContent='Use a password of at least 8 characters.'; return; }
+      document.getElementById('rsave').disabled=true; m.textContent='Saving…';
+      Promise.resolve(sb.auth.updateUser({password:v})).then(function(r){
+        if(!alive) return;
+        if(r&&r.error){ document.getElementById('rsave').disabled=false; m.textContent=r.error.message||'That didn’t work. Try again.'; return; }
+        recovering=false; route();
+      },function(){ if(!alive) return; document.getElementById('rsave').disabled=false; m.textContent='Couldn’t reach the server. Try again.'; });
+    });
+    return;
+  }
+  app.innerHTML=
+  '<div class="wrap narrow">'+
+    '<h1>Account</h1>'+
+    '<p class="muted">Signed in as '+esc(user.email||'')+'</p>'+
+    '<h2 style="margin-top:30px">Public profile</h2>'+
+    '<p class="muted">This page is public: anyone with the link can read it, and search engines may too. Only add what you’re happy to share. Leave a field blank to hide it.</p>'+
+    '<div id="pf"><p class="muted" role="status">Loading…</p></div>'+
+    '<h2 style="margin-top:34px">Your pieces</h2>'+
+    '<div id="cl"><p class="muted">Loading…</p></div>'+
+    '<h2 style="margin-top:34px">Your art, photos, music and film</h2>'+
+    '<div id="wl"><p class="muted">Loading…</p></div>'+
+    '<div class="row" style="margin-top:10px"><a class="btn" href="#/make">Share a work</a></div>'+
+    '<div class="actions" style="margin-bottom:30px"><button class="btn" id="signout" type="button">Sign out</button></div>'+
+    '<div class="panel" id="blkpanel">'+
+      '<h2>Blocked people</h2>'+
+      '<p>You don’t see comments or work from people you block, and they can’t comment on your pieces or works. They aren’t told.</p>'+
+      '<div id="blklist"><p class="muted">Loading…</p></div>'+
+    '</div>'+
+    '<div class="panel">'+
+      '<h2>Your data</h2>'+
+      '<p>Download everything stored for your account: your profile, and every piece with its full recording.</p>'+
+      '<div class="row"><button class="btn" type="button" id="xport">Download my data</button> <span class="muted" id="xmsg" aria-live="polite"></span></div>'+
+    '</div>'+
+    '<div class="panel danger-zone">'+
+      '<h2>Delete account</h2>'+
+      '<p>This permanently erases your account, your drafts, and every piece you’ve published, along with their recordings and public links. It can’t be undone.</p>'+
+      '<button class="btn" type="button" id="delacct">Delete my account…</button>'+
+      '<div id="delbox" hidden>'+
+        '<label for="delconf">Type DELETE to confirm</label>'+
+        '<input class="title-input small" id="delconf" type="text" autocomplete="off">'+
+        '<div class="actions" style="margin-bottom:0"><button class="btn primary" type="button" id="delgo" disabled>Delete everything</button> <span class="muted" id="dmsg" aria-live="polite"></span></div>'+
+      '</div>'+
+    '</div>'+
+    '<div class="gap"></div>'+
+  '</div>';
+  (function loadBlocks(){
+    var box=document.getElementById('blklist'); if(!box) return;
+    rpc('my_blocks').then(function(list){
+      if(!alive||!document.getElementById('blklist')) return;
+      box.innerHTML=(list&&list.length)?'<div class="rows">'+list.map(function(b){
+        return '<div class="rowitem"><span><b>'+esc(b.name)+'</b></span> <span class="muted">Blocked '+esc(String(b.created_at).slice(0,10))+'</span> <button class="linkbtn" type="button" data-unb="'+esc(b.id)+'">Unblock</button></div>';
+      }).join('')+'</div>':'<p class="muted">You haven’t blocked anyone.</p>';
+    },function(){ if(alive&&document.getElementById('blklist')) box.innerHTML='<p class="muted">Couldn’t load your blocked list. Try again later.</p>'; });
+  })();
+  document.getElementById('blklist').addEventListener('click',function(e){
+    var u=e.target.closest('[data-unb]'); if(!u) return; u.disabled=true;
+    rpc('unblock',{p_block:u.getAttribute('data-unb')}).then(function(){ if(alive) viewAccount(); },function(){ u.disabled=false; });
+  });
+  document.getElementById('xport').addEventListener('click',function(){
+    var m=document.getElementById('xmsg'); m.textContent='Preparing…';
+    rpc('export_my_data').then(function(data){
+      if(!alive) return;
+      try{
+        var blob=new Blob([JSON.stringify(data,null,1)],{type:'application/json'});
+        var a=document.createElement('a');
+        a.href=URL.createObjectURL(blob); a.download='handproof-account-data.json';
+        document.body.appendChild(a); a.click(); a.remove();
+        setTimeout(function(){ URL.revokeObjectURL(a.href); },1000);
+        m.textContent='Downloaded.';
+      }catch(err){ m.textContent='Download didn’t work in this browser. Try a different one.'; }
+    },function(){ if(alive) m.textContent='Couldn’t reach the server. Try again.'; });
+  });
+  document.getElementById('delacct').addEventListener('click',function(){
+    document.getElementById('delbox').hidden=false; document.getElementById('delconf').focus();
+  });
+  document.getElementById('delconf').addEventListener('input',function(e){
+    document.getElementById('delgo').disabled=(e.target.value.trim()!=='DELETE');
+  });
+  document.getElementById('delgo').addEventListener('click',function(){
+    var m=document.getElementById('dmsg'); this.disabled=true; m.textContent='Deleting…';
+    deleteAllWorks().catch(function(){}).then(function(){ return rpc('delete_my_account'); }).then(function(){
+      if(draft && draft.mode==='cloud'){ draft=null; store.remove(DRAFT_KEY); }
+      return Promise.resolve(sb.auth.signOut()).catch(function(){});
+    }).then(function(){ location.hash='#/'; route(); },function(){
+      if(alive){ m.textContent='Couldn’t delete the account. Try again in a moment.'; document.getElementById('delgo').disabled=false; }
+    });
+  });
+  document.getElementById('signout').addEventListener('click',function(){ Promise.resolve(sb.auth.signOut()).then(function(){},function(){}); });
+  rpc('get_my_profile').then(function(me){
+    if(!alive) return;
+    var pf=document.getElementById('pf'); if(!pf) return;
+    if(!me){ pf.innerHTML='<p class="muted">No profile found for this account.</p>'; return; }
+    pf.innerHTML=
+      '<label for="pn">Name shown on your pieces</label>'+
+      '<input class="title-input small" id="pn" type="text" maxlength="60" value="'+esc(me.name||'')+'">'+
+      '<label for="pb">About you</label>'+
+      '<textarea id="pb" class="bio-in" maxlength="600" placeholder="A few lines about you and what you write.">'+esc(me.bio||'')+'</textarea>'+
+      '<label for="pw">Website</label>'+
+      '<input class="title-input small" id="pw" type="text" maxlength="200" inputmode="url" placeholder="https://" value="'+esc(me.website||'')+'">'+
+      '<label for="pc">How to contact you</label>'+
+      '<input class="title-input small" id="pc" type="text" maxlength="200" placeholder="An email address, a handle, or a link" value="'+esc(me.contact||'')+'">'+
+      '<p class="muted small-note">Shown publicly exactly as typed, so use an address you’re fine with strangers and spam bots seeing. We never show your sign-in email.</p>'+
+      visPickerHTML('pvis',me.visibility==='link'?'link':'public','Who can find your writer page',[
+        ['public','Public','Your name on pieces and comments links to this page.'],
+        ['link','Link only','Your name on pieces and comments is plain text, and search engines are asked to skip the page. Anyone with its address can still open it and read everything on it.']])+
+      '<div class="row"><button class="btn primary" id="savepf" type="button">Save profile</button> <a class="btn" id="viewpf" href="#/w/'+encodeURIComponent(me.id)+'">View public page</a> <span class="muted" id="pmsg" role="status" aria-live="polite"></span></div>';
+    document.getElementById('savepf').addEventListener('click',function(){
+      var m=document.getElementById('pmsg'), btn=this; btn.disabled=true; m.textContent='Saving…';
+      rpc('set_profile',{p_name:document.getElementById('pn').value,p_bio:document.getElementById('pb').value,p_website:document.getElementById('pw').value,p_contact:document.getElementById('pc').value})
+        .then(function(){ return rpc('set_profile_visibility',{p_value:visValue('pvis')}); })
+        .then(function(){ btn.disabled=false; if(alive) m.textContent='Saved.'; },function(e){ btn.disabled=false; if(alive) m.textContent=e.message; });
+    });
+  },function(){ var el=document.getElementById('pf'); if(alive&&el) el.innerHTML='<p class="muted">Couldn’t load your profile. Reload the page to try again.</p>'; });
+  function worklist(){
+    rpc('my_works').then(function(rows){
+      if(!alive) return;
+      var el=document.getElementById('wl'); if(!el) return;
+      if(!rows||!rows.length){ el.innerHTML='<p class="muted">Nothing here yet.</p>'; return; }
+      el.innerHTML='<div class="rows" id="wmine">'+rows.map(function(r){
+        var st=r.status==='published'?'<span class="chip good">Published</span>'+(r.visibility==='unlisted'?' <span class="chip">Link only</span>':''):r.status==='removed'?'<span class="chip flag">Removed</span>':'<span class="chip">Draft</span>';
+        return '<div class="rowitem"><a href="#/'+(r.status==='draft'?'make':'m')+'/'+encodeURIComponent(r.id)+'">'+esc(r.title)+'</a>'+
+          '<span class="hide-s muted">'+esc((KINDS[r.kind]||{name:r.kind}).name)+'</span>'+
+          '<span class="hide-s muted">'+plural(r.item_count,'file')+'</span>'+
+          '<span>'+st+(r.status==='removed'&&r.removed_reason?'<small class="muted"> '+esc(r.removed_reason)+'</small>':'')+'</span>'+
+          '<button class="linkbtn danger" type="button" data-wdel="'+esc(r.id)+'">Delete</button></div>';
+      }).join('')+'</div>';
+    },function(){ var el=document.getElementById('wl'); if(alive&&el) el.innerHTML='<p class="muted">Couldn’t load your work. Reload the page to try again.</p>'; });
+  }
+  document.getElementById('wl').addEventListener('click',function(e){
+    var b=e.target.closest('[data-wdel]'); if(!b) return;
+    if(!confirm('Delete this work and all of its files? This can’t be undone.')) return;
+    b.disabled=true;
+    rpc('delete_work',{p_work:b.getAttribute('data-wdel')}).then(function(paths){ return removeFiles(paths||[]); }).then(function(){ worklist(); },function(){ b.disabled=false; });
+  });
+  function list(){
+    rpc('my_pieces').then(function(rows){
+      if(!alive) return;
+      var el=document.getElementById('cl');
+      if(!rows||!rows.length){ el.innerHTML='<div class="empty-state"><p>Nothing here yet. Pieces you write while signed in show up here.</p><a class="btn primary" href="#/write">Start writing</a></div>'; return; }
+      el.innerHTML='<div class="rows" id="cmine">'+rows.map(function(r){
+        var pub=r.status==='published', gone=r.status==='removed';
+        return '<div class="rowitem"><span>'+(pub?'<a href="#/p/'+encodeURIComponent(r.id)+'">'+esc(r.title)+'</a>':esc(r.title))+
+            (gone?'<br><span class="muted">Removed: '+esc(r.removed_reason||'it broke the rules')+'</span>':'')+'</span>'+
+          '<span class="hide-s muted">'+fmtDate(Date.parse(pub||gone?r.published_at:r.created_at))+'</span>'+
+          '<span class="hide-s muted">'+fmtDur(r.active_seconds||0)+'</span>'+
+          '<span>'+(pub?pasteChip({pasted:Number(r.pasted_chars)||0})+(r.visibility==='unlisted'?' <span class="chip">Link only</span>':''):gone?'<span class="chip flag">Removed</span>':'<span class="chip yellow">Unfinished draft</span>')+'</span>'+
+          '<button class="linkbtn danger" type="button" data-cdel="'+esc(r.id)+'">Delete</button></div>';
+      }).join('')+'</div>';
+    },function(){ if(alive) document.getElementById('cl').innerHTML='<p class="muted">Couldn’t load your pieces. Try again in a moment.</p>'; });
+  }
+  list(); worklist();
+  document.getElementById('cl').addEventListener('click',function(e){
+    var b=e.target.closest('[data-cdel]'); if(!b) return;
+    if(!confirm('Delete this piece and its recording? Its public link will stop working. This can’t be undone.')) return;
+    b.disabled=true;
+    rpc('delete_piece',{p_piece:b.getAttribute('data-cdel')}).then(list,function(){ b.disabled=false; });
+  });
+}
+
+/* ---------- terms and privacy ---------- */
+function contactHTML(){
+  var c=(CONFIG.contact||'').trim();
+  return c?'<a href="mailto:'+esc(c)+'">'+esc(c)+'</a>':'';
+}
+var LEGAL={
+  terms:{
+    title:'Terms',
+    sections:function(){
+      var c=contactHTML();
+      return [
+        ['What Handproof is',[
+          'Handproof is a place to write and publish work together with a recorded history of how it was made. The record shows the order, pace and edits of your writing, and it marks any text that was pasted in. It is evidence about process. It is not a judgment about whether anything was made with AI, and it is not a guarantee that a person wrote something.'
+        ]],
+        ['Who can use it',[
+          'You must be at least 16. Each account belongs to one person. Keep your sign-in details safe, because you are responsible for what happens under your account.'
+        ]],
+        ['Your work',[
+          'You keep ownership of everything you write. By publishing a piece you give Handproof permission to store it and to show it publicly, including the full replay of every version, and to run the integrity checks shown on the piece’s page. Drafts stay private to you.',
+          'The same applies to art, photos, music and film you share: you keep ownership, and by publishing a work you give Handproof permission to store every file you added to it, to show them publicly (including the work-in-progress, original and project files), and to run the integrity checks on its page. Unpublished drafts and their files stay private to you.',
+          'That permission ends when you delete the piece, the work or your account. Copies in backups can linger for a limited time after that.'
+        ]],
+        ['Rules',[
+          'Publish only work you wrote yourself. Don’t publish text that an AI system wrote, and don’t type or retype AI-written text into the recorder to pass it off as your own writing.',
+          'Don’t publish work copied from someone else, or anything illegal, hateful, harassing, or that exposes people’s private information. Don’t publish sexual content involving minors, malware, or spam.',
+          'For art, photos, music and film: share only work you made yourself and files you have the right to share. Don’t share work generated by AI and presented as your own, work copied from someone else, or files containing other people’s private information or anything illegal. Don’t upload files meant to harm devices.',
+          'Comments: be civil. Don’t post harassment, hate, spam, illegal content, or other people’s private information. The owner of a piece or work can delete comments on it, and we may remove any comment or close accounts that break these rules.',
+          'Don’t try to fake the recording: for example by scripting input, tampering with timings, or interfering with the service. Don’t overload the service with automated requests.'
+        ]],
+        ['What the record does and doesn’t mean',[
+          'A piece’s page shows what the server received and whether the recorded history is intact. It can flag batches whose timing doesn’t add up. It cannot tell whether someone retyped text from elsewhere, or whose ideas the writing contains. If you rely on a piece’s record, for example to decide whether to work with a writer, treat it as one piece of evidence.'
+        ]],
+        ['Reports and removal',[
+          'Anyone can report a published piece using the “Report this piece” link on its page. We may hide or remove any piece, and suspend or close any account, if it breaks these rules, if we receive a valid legal request, or to protect people or the service. Where we can, we tell the author which piece was removed and why. Repeated violations lead to account closure.',
+          c?'To send a copyright complaint or another legal notice, email '+c+' with a link to the piece, what you say is wrong, and how we can reach you.':'To raise a copyright or legal concern, use the “Report this piece” link on the piece’s page.'
+        ]],
+        ['Ending your use',[
+          'You can delete any piece, or your whole account, at any time from your Account page. Deleting your account erases your pieces and their recordings.'
+        ]],
+        ['No guarantees',[
+          'Handproof is an early service and is provided as it is, without promises that it will always be available, error-free, or that its records will be accepted by anyone else. To the extent the law allows, Handproof isn’t liable for indirect or consequential losses arising from your use of it, and its total liability to you is limited to what you’ve paid us, which for a free service is nothing.'
+        ]],
+        ['Changes',[
+          'We may update these terms. The date at the top shows the current version. If a change matters to your rights, we will say so on the site before it takes effect.'
+        ]]
+      ].concat(c?[['Contact',['Questions, takedown requests and legal notices: '+c+'.']]]:[]);
+    }
+  },
+  privacy:{
+    title:'Privacy',
+    sections:function(){
+      var c=contactHTML();
+      return [
+        ['What we collect',[
+          'When you create an account: your email address, a password (which we never see in readable form), and the display name you choose.',
+          'When you write while signed in: the text of your piece at regular points, how long the text was at each moment, the timing of your typing, how much was pasted, and the time our server received each part. Unfinished drafts are stored too, privately, and are deleted automatically after 14 days.',
+          'When you share art, photos, music or film: every file you upload, its name, size and type, a checksum of its contents, and the time our server received it. Unpublished drafts are kept privately and drafts with no files are deleted after 14 days.',
+          'If you record a take in the browser: the microphone is used only while you record, and nothing is sent until you add the take. An added take is stored like any other file, along with its length and the time our server saw pass.',
+          'If you block someone: we store that you did, so their comments and work stay hidden from you and they can’t comment on yours. They aren’t told.',
+          'When you react to or comment on a piece or work: the thumbs up or down you choose, and the comments you write.',
+          'If you fill in a profile: the bio, website and contact line you choose to show. Anyone with the address of your writer page can read them, even if you set the page to “Link only”.',
+          'When you report a piece or work: the reason and details you give, and your account if you’re signed in.',
+          'If you use Handproof without signing in, your drafts and pieces are kept only in your own browser and are not sent to us.'
+        ]],
+        ['What is public',[
+          'When you publish a piece, these become visible to anyone who has its link, and to everyone in Browse unless you choose “Link only”: its title, your display name, its statistics, and the full replay, which includes earlier versions of the text and anything you deleted along the way. When you publish a work, its title, description, your display name and every file you added to it become public. Photos can contain the place they were taken; Handproof offers to remove that data before upload, but you are responsible for what you publish. Anything you put in your profile (bio, website, contact line) is public. Comments are public and show your display name. The number of thumbs up and down on a piece or work is public; who gave them is not. Your sign-in email address is never shown.'
+        ]],
+        ['Where it is kept and who can see it',[
+          'Everything is stored with Supabase, our database and sign-in provider, in data centers in the eastern United States. The people who run Handproof can access the database to moderate reports, keep the service secure, and respond to legal requests. We don’t sell your data and we don’t use it for advertising.'
+        ]],
+        ['Cookies and third parties',[
+          'Handproof doesn’t use advertising or analytics trackers. Your browser stores your sign-in session and any local drafts. The page loads its fonts from Google Fonts, so Google can see your IP address when you visit.'
+        ]],
+        ['Your choices',[
+          'You can download everything stored about you, delete any piece, or delete your whole account from your Account page. Deleting your account erases your profile, drafts, published pieces and recordings. Copies in backups can remain for a limited time. We keep reports about content for as long as needed to run moderation, but they are deleted along with the piece they refer to.'
+        ]],
+        ['Children',[
+          'Handproof isn’t for anyone under 16. If you believe a child has made an account, tell us and we will delete it.'
+        ]],
+        ['Changes',[
+          'If this policy changes, the date at the top will change with it, and we will say so on the site if the change affects how we use your data.'
+        ]]
+      ].concat(c?[['Contact',['Questions or requests about your data: '+c+'.']]]:[]);
+    }
+  }
+};
+function viewLegal(kind){
+  var d=LEGAL[kind]||LEGAL.terms;
+  document.title=d.title+' · Handproof';
+  app.innerHTML=
+  '<div class="wrap narrow legal">'+
+    '<h1>'+d.title+'</h1>'+
+    '<p class="updated">Last updated '+TERMS_VERSION+'</p>'+
+    d.sections().map(function(s){
+      return '<h2>'+s[0]+'</h2>'+s[1].map(function(p){ return '<p>'+(p.indexOf('<a ')>=0?p:esc(p))+'</p>'; }).join('');
+    }).join('')+
+    '<div class="gap"></div>'+
+  '</div>';
+}
+
+/* ---------- profile ---------- */
+function viewProfile(){
+  document.title='Profile · Handproof';
+  var totalActive=0, totalWords=0;
+  pieces.forEach(function(p){ totalActive+=p.activeSeconds||0; totalWords+=p.wordCount||0; });
+  app.innerHTML=
+  '<div class="wrap narrow">'+
+    '<div class="who">'+
+      '<div class="avatar" id="av" aria-hidden="true">'+esc((userName||'Y').charAt(0).toUpperCase())+'</div>'+
+      '<div><label class="sr" for="nm">Name shown on your pieces</label><input class="title-input" id="nm" type="text" maxlength="60" value="'+esc(userName)+'" placeholder="Your name"></div>'+
+    '</div>'+
+    '<div class="stats" id="pstats">'+
+      '<div class="stat"><b>'+pieces.length+'</b><span>'+(pieces.length===1?'piece':'pieces')+'</span></div>'+
+      '<div class="stat"><b>'+fmtDur(totalActive)+'</b><span>active writing time</span></div>'+
+      '<div class="stat"><b>'+totalWords+'</b><span>words</span></div>'+
+    '</div>'+
+    (pieces.length
+      ? '<h2>Your pieces</h2><div class="rows" id="mine">'+
+          pieces.map(function(p){
+            return '<div class="rowitem"><a href="#/piece/'+encodeURIComponent(p.id)+'">'+esc(p.title)+'</a>'+
+              '<span class="hide-s muted">'+(p.createdAt?fmtDate(p.createdAt):'')+'</span>'+
+              '<span class="hide-s muted">'+fmtDur(p.activeSeconds)+'</span>'+
+              '<span>'+pasteChip(p)+'</span>'+
+              '<button class="linkbtn danger" type="button" data-del="'+esc(p.id)+'">Delete</button></div>';
+          }).join('')+
+        '</div>'
+      : '<div class="empty-state"><h2>Nothing published yet</h2><p>Your pieces will show up here after you publish one.</p><a class="btn primary" href="#/write">Start writing</a></div>')+
+    '<div class="panel">'+
+      '<h2>Your data</h2>'+
+      '<p>Everything is stored in this browser only. Export a copy to back it up or move it to another browser.</p>'+
+      '<div class="row"><button class="btn" type="button" id="export">Export pieces</button></div>'+
+      '<div class="row"><label class="inline" for="imp">Import pieces</label><input type="file" id="imp" accept=".json,application/json"></div>'+
+      '<p class="muted" id="dataMsg" aria-live="polite"></p>'+
+    '</div>'+
+    '<div class="gap"></div>'+
+  '</div>';
+
+  document.getElementById('nm').addEventListener('input',function(e){
+    userName=e.target.value; store.set(NAME_KEY,userName);
+    document.getElementById('av').textContent=(userName||'Y').charAt(0).toUpperCase();
+  });
+  var mine=document.getElementById('mine');
+  if(mine) mine.addEventListener('click',function(e){
+    var b=e.target.closest('[data-del]'); if(!b) return;
+    if(!confirm('Delete this piece and its recording? This can’t be undone.')) return;
+    var id=b.getAttribute('data-del');
+    pieces=pieces.filter(function(p){ return p.id!==id; });
+    store.set(PIECES_KEY,pieces);
+    route();
+  });
+  var msg=document.getElementById('dataMsg');
+  document.getElementById('export').addEventListener('click',function(){
+    try{
+      var blob=new Blob([JSON.stringify({app:'handproof',version:1,name:userName,pieces:pieces},null,1)],{type:'application/json'});
+      var a=document.createElement('a');
+      a.href=URL.createObjectURL(blob); a.download='handproof-export.json';
+      document.body.appendChild(a); a.click(); a.remove();
+      setTimeout(function(){ URL.revokeObjectURL(a.href); },1000);
+      msg.textContent='Exported '+plural(pieces.length,'piece')+'.';
+    }catch(err){ msg.textContent='Export didn’t work in this browser. Try a different one.'; }
+  });
+  document.getElementById('imp').addEventListener('change',function(e){
+    var f=e.target.files&&e.target.files[0]; if(!f) return;
+    var fr=new FileReader();
+    fr.onload=function(){
+      try{
+        var data=JSON.parse(fr.result), list=Array.isArray(data)?data:data.pieces, added=0;
+        if(!Array.isArray(list)) throw new Error('bad');
+        var have={}; pieces.forEach(function(p){ have[p.id]=1; });
+        list.forEach(function(p){
+          if(p && typeof p.id==='string' && typeof p.title==='string' && Array.isArray(p.snapshots) && !have[p.id]){
+            p.demo=false; pieces.push(p); have[p.id]=1; added++;
+          }
+        });
+        pieces.sort(function(a,b){ return (b.createdAt||0)-(a.createdAt||0); });
+        if(!store.set(PIECES_KEY,pieces)) throw new Error('storage');
+        route();
+        var m2=document.getElementById('dataMsg'); if(m2) m2.textContent='Imported '+plural(added,'new piece')+'.';
+      }catch(err){
+        msg.textContent=(err&&err.message==='storage')?'Import failed because browser storage is full.':'That file isn’t a Handproof export. Choose a file made with Export pieces.';
+      }
+    };
+    fr.readAsText(f);
+  });
+}
+
+/* ---------- works: art, photo, music and film ---------- */
+var KINDS={
+  art:{name:'Art', main:'image', accept:'image/jpeg,image/png,image/webp,application/zip,.zip',
+    final:'The finished artwork: a JPG, PNG or WebP image, up to 25 MB.',
+    tip:'Add photos or screenshots as you go: sketches, layers, early passes. A project file from your drawing app, zipped, helps too. Then add the finished piece.'},
+  photo:{name:'Photo', main:'image', accept:'image/jpeg,image/png,image/webp,application/zip,.zip',
+    final:'The finished photo: a JPG, PNG or WebP image, up to 25 MB.',
+    tip:'Add the untouched original from your camera and any edited versions, then the finished photo. Camera files often hold your location, and you’ll get the chance to remove it.'},
+  music:{name:'Music', main:'audio', accept:'audio/mpeg,audio/wav,audio/mp4,audio/flac,audio/ogg,audio/aac,image/jpeg,image/png,image/webp,application/zip,.mp3,.wav,.m4a,.flac,.ogg,.aac,.zip',
+    final:'The finished track: MP3, WAV, M4A, FLAC, OGG or AAC, up to 50 MB.',
+    tip:'Record takes right here, which the server clock can check, and add stems, your project file (zipped) and a screen recording of a session as files. Then add the finished track. Several dated stages over days or weeks make the strongest record.'},
+  film:{name:'Film', main:'video', accept:'video/mp4,video/webm,video/quicktime,image/jpeg,image/png,image/webp,application/zip,.mp4,.webm,.mov,.zip',
+    final:'The finished film: MP4, WebM or MOV, up to 50 MB.',
+    tip:'Add raw clips, your edit project (zipped) and progress cuts, then the finished film. Files can be up to 50 MB each, so short clips or lower-resolution copies work best.'}
+};
+var KIND_CHIP={art:'pink',photo:'blue',music:'yellow',film:'green'};
+var ROLE_LABEL={process:'Work in progress', original:'Original or source file', project:'Project file', final:'Finished work', thumb:'Preview', live:'Recorded in the browser'};
+var EXT_MIME={jpg:'image/jpeg',jpeg:'image/jpeg',png:'image/png',webp:'image/webp',mp3:'audio/mpeg',wav:'audio/wav',m4a:'audio/mp4',aac:'audio/aac',flac:'audio/flac',ogg:'audio/ogg',mp4:'video/mp4',webm:'video/webm',mov:'video/quicktime',zip:'application/zip'};
+function fileMime(f){ var m=/\.([A-Za-z0-9]+)$/.exec(f.name||''), e=m&&EXT_MIME[m[1].toLowerCase()]; return e||f.type||''; }
+function releaseHTML(u){
+  if(!u||!/^https:\/\/[^\s]+$/.test(u)) return '';
+  var host=''; try{ host=new URL(u).hostname.replace(/^www\./,''); }catch(e){ return ''; }
+  return '<p class="release"><a href="'+esc(u)+'" target="_blank" rel="noopener noreferrer nofollow">Released at '+esc(host)+'</a> <span class="muted">Link added by the artist. Handproof doesn’t check it.</span></p>';
+}
+function liveFactsHTML(kind,items,v){
+  var live=items.filter(function(i){ return i.role==='live'; }), out='';
+  if(v&&v.server_span_seconds>0) out+='<dt>First to last file</dt><dd>'+fmtDur(v.server_span_seconds)+'</dd>';
+  if(live.length){
+    var tot=live.reduce(function(a,i){ return a+(Number(i.live_claimed_ms)||0); },0);
+    out+='<dt>Recorded here</dt><dd>'+plural(live.length,'take')+', '+fmtDur(Math.round(tot/1000))+' in all. Each was checked against the server clock.</dd>';
+  }else if(kind==='music'){
+    out+='<dt>Recorded here</dt><dd>None. Every file was uploaded.</dd>';
+  }
+  return out;
+}
+function liveNote(i){
+  if(i.role!=='live'||!i.live_claimed_ms) return '';
+  return '<small class="muted livenote">Recorded here, '+fmtDur(Math.round(i.live_claimed_ms/1000))+'. The server clock saw '+fmtDur(Math.round((i.live_elapsed_ms||0)/1000))+' pass.</small>';
+}
+function fmtBytes(n){ n=Number(n)||0; if(n<1024) return n+' B'; if(n<1048576) return (n/1024).toFixed(n<10240?1:0)+' KB'; return (n/1048576).toFixed(n<10485760?1:0)+' MB'; }
+function fileProblem(kind,role,mime,size){
+  var img=/^image\/(jpeg|png|webp)$/.test(mime), zip=mime==='application/zip';
+  var aud=kind==='music' && /^audio\/(mpeg|wav|x-wav|mp4|x-m4a|flac|ogg|aac|webm)$/.test(mime);
+  var vid=kind==='film' && /^video\/(mp4|webm|quicktime)$/.test(mime);
+  var k=KINDS[kind];
+  if(size<1) return 'That file is empty.';
+  if(!(img||zip||aud||vid)) return 'That file type isn’t accepted for '+k.name.toLowerCase()+'. '+k.final;
+  if(role==='final' && !((k.main==='image'&&img)||(k.main==='audio'&&aud)||(k.main==='video'&&vid))) return 'The finished work must be one of these: '+k.final;
+  if(role==='project' && !zip) return 'Project files must be zipped (.zip).';
+  if(zip && role==='thumb') return 'Not allowed.';
+  if(img && size>26214400) return 'Images can be at most 25 MB.';
+  if(size>52428800) return 'Files can be at most 50 MB.';
+  return '';
+}
+function hexOf(buf){ var a=new Uint8Array(buf), s=''; for(var i=0;i<a.length;i++){ s+=(a[i]<16?'0':'')+a[i].toString(16); } return s; }
+function sha256Hex(u8){ return crypto.subtle.digest('SHA-256',u8).then(hexOf); }
+function uuid4(){
+  if(window.crypto && crypto.randomUUID) return crypto.randomUUID();
+  var b=new Uint8Array(16); crypto.getRandomValues(b); b[6]=(b[6]&15)|64; b[8]=(b[8]&63)|128;
+  var h=hexOf(b); return h.slice(0,8)+'-'+h.slice(8,12)+'-'+h.slice(12,16)+'-'+h.slice(16,20)+'-'+h.slice(20);
+}
+function safeName(n){
+  var s=String(n||'file').replace(/[^A-Za-z0-9._-]+/g,'-').replace(/^-+|-+$/g,'');
+  if(!s) s='file';
+  return s.length>90?s.slice(s.length-90):s;
+}
+
+/* JPEG metadata: warn about GPS, and offer to strip it before upload */
+function jpegSegments(u8){
+  if(u8.length<4 || u8[0]!==0xFF || u8[1]!==0xD8) return null;
+  var segs=[], i=2;
+  while(i+4<=u8.length){
+    if(u8[i]!==0xFF) break;
+    var mk=u8[i+1];
+    if(mk===0xDA || mk===0xD9) break;
+    if(mk===0x01 || (mk>=0xD0 && mk<=0xD7)){ i+=2; continue; }
+    var len=(u8[i+2]<<8)|u8[i+3];
+    if(len<2 || i+2+len>u8.length) break;
+    segs.push({m:mk,s:i,e:i+2+len});
+    i+=2+len;
+  }
+  return segs;
+}
+function rd16(u8,o,le){ return le?(u8[o]|(u8[o+1]<<8)):((u8[o]<<8)|u8[o+1]); }
+function rd32(u8,o,le){ return le?(u8[o]+u8[o+1]*256+u8[o+2]*65536+u8[o+3]*16777216):(u8[o]*16777216+u8[o+1]*65536+u8[o+2]*256+u8[o+3]); }
+function isExifSeg(u8,s){ return u8[s+4]===0x45 && u8[s+5]===0x78 && u8[s+6]===0x69 && u8[s+7]===0x66 && u8[s+8]===0 && u8[s+9]===0; }
+function jpegHasGps(u8){
+  var segs=jpegSegments(u8); if(!segs) return false;
+  for(var k=0;k<segs.length;k++){
+    var g=segs[k]; if(g.m!==0xE1 || !isExifSeg(u8,g.s)) continue;
+    var t=g.s+10, le=u8[t]===0x49, ifd=t+rd32(u8,t+4,le);
+    if(ifd+2>g.e) continue;
+    var n=rd16(u8,ifd,le);
+    for(var e=0;e<n;e++){ var o=ifd+2+e*12; if(o+12>g.e) break; if(rd16(u8,o,le)===0x8825) return true; }
+  }
+  return false;
+}
+function stripJpegMeta(u8){
+  var segs=jpegSegments(u8); if(!segs) return u8;
+  var out=[], pos=0, total=0;
+  for(var k=0;k<segs.length;k++){
+    var g=segs[k];
+    if(g.m===0xE1 || g.m===0xED){ out.push(u8.subarray(pos,g.s)); total+=g.s-pos; pos=g.e; }
+  }
+  out.push(u8.subarray(pos)); total+=u8.length-pos;
+  var res=new Uint8Array(total), at=0;
+  out.forEach(function(p){ res.set(p,at); at+=p.length; });
+  return res;
+}
+function makeThumb(blob){
+  return new Promise(function(resolve){
+    var url=URL.createObjectURL(blob), img=new Image();
+    img.onload=function(){
+      try{
+        var s=Math.min(1,480/Math.max(img.width,img.height)), c=document.createElement('canvas');
+        c.width=Math.max(1,Math.round(img.width*s)); c.height=Math.max(1,Math.round(img.height*s));
+        var x=c.getContext('2d'); x.fillStyle='#fff'; x.fillRect(0,0,c.width,c.height); x.drawImage(img,0,0,c.width,c.height);
+        c.toBlob(function(b){ URL.revokeObjectURL(url); resolve(b && b.size<=400000 ? b : null); },'image/jpeg',0.8);
+      }catch(e){ URL.revokeObjectURL(url); resolve(null); }
+    };
+    img.onerror=function(){ URL.revokeObjectURL(url); resolve(null); };
+    img.src=url;
+  });
+}
+
+/* signed links for private files (valid for an hour, cached) */
+var urlCache={};
+function signedUrls(paths){
+  var now=Date.now(), need=[];
+  paths.forEach(function(p){ if(p && (!urlCache[p] || urlCache[p].exp<now) && need.indexOf(p)<0) need.push(p); });
+  var done=need.length?Promise.resolve(sb.storage.from('works').createSignedUrls(need,3600)).then(function(r){
+    if(r.error) throw new Error(r.error.message||'Couldn’t load files');
+    (r.data||[]).forEach(function(e){ if(e && e.signedUrl) urlCache[e.path]={url:e.signedUrl,exp:now+3300000}; });
+  }):Promise.resolve();
+  return done.then(function(){ var m={}; paths.forEach(function(p){ if(urlCache[p]) m[p]=urlCache[p].url; }); return m; });
+}
+function removeFiles(paths){
+  var chunks=[]; for(var i=0;i<paths.length;i+=50) chunks.push(paths.slice(i,i+50));
+  return chunks.reduce(function(p,c){ return p.then(function(){ return Promise.resolve(sb.storage.from('works').remove(c)).then(function(){},function(){}); }); },Promise.resolve());
+}
+function deleteAllWorks(){
+  return rpc('my_works').then(function(list){
+    var all=[];
+    return (list||[]).reduce(function(p,w){
+      return p.then(function(){ return rpc('delete_work',{p_work:w.id}).then(function(paths){ all=all.concat(paths||[]); }); });
+    },Promise.resolve()).then(function(){ return removeFiles(all); });
+  });
+}
+function hydrateImages(root){
+  var imgs=root.querySelectorAll('img[data-path]'), paths=[];
+  Array.prototype.forEach.call(imgs,function(i){ paths.push(i.getAttribute('data-path')); });
+  if(!paths.length) return;
+  signedUrls(paths).then(function(m){
+    Array.prototype.forEach.call(imgs,function(i){ var u=m[i.getAttribute('data-path')]; if(u) i.src=u; });
+  },function(){});
+}
+function workTileHTML(w){
+  var k=KINDS[w.kind]||{name:w.kind};
+  return '<a class="tile" href="#/m/'+encodeURIComponent(w.id)+'">'+
+    '<div class="wk-thumb">'+(w.thumb_path?'<img alt="" loading="lazy" data-path="'+esc(w.thumb_path)+'">':'<span>'+esc(k.name)+'</span>')+'</div>'+
+    '<div class="tile-body"><h3>'+esc(w.title)+'</h3><p class="by">by '+esc(w.author)+'</p>'+
+    '<div class="facts"><span class="chip '+(KIND_CHIP[w.kind]||'')+'">'+esc(k.name)+'</span>'+
+    '<span>'+plural(Number(w.process_count)||0,'process file')+'</span>'+
+    (Number(w.span_seconds)>0?'<span>over '+fmtDur(Number(w.span_seconds))+'</span>':'')+'</div></div></a>';
+}
+
+/* ---------- feedback: thumbs up or down, and comments (no votes on comments) ---------- */
+var ICON_UP='<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 10v11H3V10h4z"/><path d="M7 10l4-8c1.7 0 3 1.3 3 3v4h6.2c1 0 1.8.9 1.6 1.9l-1.4 8c-.2 1-1 1.7-2 1.7H7"/></svg>';
+var ICON_DOWN='<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17 14V3h4v11h-4z"/><path d="M17 14l-4 8c-1.7 0-3-1.3-3-3v-4H3.8c-1 0-1.8-.9-1.6-1.9l1.4-8c.2-1 1-1.7 2-1.7H17"/></svg>';
+function fmtDateTime(ms){ var d=new Date(ms); return d.toLocaleDateString(undefined,{year:'numeric',month:'short',day:'numeric'})+', '+d.toLocaleTimeString(undefined,{hour:'numeric',minute:'2-digit'}); }
+function mountFeedback(root,kind,id,isAlive){
+  var order='newest', fb=null, built=false;
+  root.innerHTML='<h2>Feedback</h2><p class="muted" role="status">Loading…</p>';
+  function load(append){
+    var off=append&&fb?fb.comments.length:0;
+    return rpc('get_feedback',{p_kind:kind,p_id:id,p_order:order,p_limit:50,p_offset:off}).then(function(r){
+      if(!isAlive()) return;
+      if(!r){ root.innerHTML=''; return; }
+      if(append&&fb){ fb.comments=fb.comments.concat(r.comments); fb.total=r.total; fb.up=r.up; fb.down=r.down; } else fb=r;
+      if(!built) build();
+      paintReact(); paintList();
+    },function(){ if(isAlive() && !built) root.innerHTML='<h2>Feedback</h2><p class="muted">Couldn’t load feedback right now. Try again in a moment.</p>'; });
+  }
+  function build(){
+    built=true;
+    root.innerHTML=
+      '<h2>Feedback</h2>'+
+      '<div class="react" role="group" aria-label="Rate this '+(kind==='piece'?'piece':'work')+'">'+
+        '<button type="button" class="rbtn" id="rup">'+ICON_UP+'<span id="nup">0</span></button>'+
+        '<button type="button" class="rbtn" id="rdown">'+ICON_DOWN+'<span id="ndown">0</span></button>'+
+        '<span class="muted" id="fmsg" role="status" aria-live="polite"></span>'+
+      '</div>'+
+      '<h3 class="cm-h" id="cmh">Comments</h3>'+
+      (user
+        ? '<form id="cform" novalidate><label class="sr" for="cb">Add a comment</label>'+
+            '<textarea id="cb" class="cm-in" maxlength="1000" placeholder="Add a comment"></textarea>'+
+            '<div class="row"><button class="btn primary" type="submit" id="cpost">Post comment</button> <span class="muted" id="cmsg" role="status" aria-live="polite"></span></div></form>'
+        : '<p class="muted"><a href="#/account">Sign in</a> to react or comment.</p>')+
+      '<div class="cm-sort" id="csortbox" hidden><label for="csort" class="inline">Sort comments</label>'+
+        '<select id="csort"><option value="newest">Newest first</option><option value="oldest">Oldest first</option></select></div>'+
+      '<ul class="cm-list" id="clist"></ul>'+
+      '<p><button class="btn" type="button" id="cmore" hidden>Show more comments</button></p>';
+    function react(v){
+      var m=document.getElementById('fmsg');
+      if(!user){ m.innerHTML='<a href="#/account">Sign in</a> to react.'; return; }
+      var val=(fb.mine===v)?0:v;
+      rpc('set_reaction',{p_kind:kind,p_id:id,p_value:val}).then(function(r){
+        if(!isAlive()) return;
+        fb.up=r.up; fb.down=r.down; fb.mine=val===0?null:val; m.textContent=''; paintReact();
+      },function(e){ if(isAlive()) m.textContent=/too many/.test(e.message)?'You’re reacting very fast. Try again in a little while.':'Couldn’t save that. Try again.'; });
+    }
+    document.getElementById('rup').addEventListener('click',function(){ react(1); });
+    document.getElementById('rdown').addEventListener('click',function(){ react(-1); });
+    document.getElementById('csort').addEventListener('change',function(e){ order=e.target.value; load(false); });
+    document.getElementById('cmore').addEventListener('click',function(){ load(true); });
+    var form=document.getElementById('cform');
+    if(form) form.addEventListener('submit',function(e){
+      e.preventDefault();
+      var ta=document.getElementById('cb'), btn=document.getElementById('cpost'), m=document.getElementById('cmsg');
+      if(!ta.value.trim()){ m.textContent='Write something first.'; return; }
+      btn.disabled=true; m.textContent='Posting…';
+      rpc('add_comment',{p_kind:kind,p_id:id,p_body:ta.value}).then(function(){
+        if(!isAlive()) return;
+        ta.value=''; btn.disabled=false; m.textContent='Posted.'; load(false);
+      },function(err){ if(!isAlive()) return; btn.disabled=false; m.textContent=/not found/.test(err.message)?'This can’t take comments any more.':err.message; });
+    });
+    document.getElementById('clist').addEventListener('click',function(e){
+      var del=e.target.closest('[data-del]'), rep=e.target.closest('[data-rep]'), can=e.target.closest('[data-cancel]'), blk=e.target.closest('[data-blk]'), li=e.target.closest('li.cm');
+      if(blk){
+        if(!confirm('Block this person? You won’t see their comments or work, and they won’t be able to comment on yours. They aren’t told. You can undo this in Account.')) return;
+        blk.disabled=true;
+        rpc('block_comment_author',{p_comment:li.getAttribute('data-id')}).then(function(){
+          if(!isAlive()) return; load(false);
+          var fm=document.getElementById('fmsg'); if(fm) fm.textContent='Blocked. You can undo this in Account.';
+        },function(){ blk.disabled=false; var n=li.querySelector('.cm-note'); if(n) n.textContent='Couldn’t block them just now. Try again.'; });
+      }else if(del){
+        if(!confirm('Delete this comment?')) return;
+        del.disabled=true;
+        rpc('delete_comment',{p_comment:del.getAttribute('data-del')}).then(function(){ if(isAlive()) load(false); },function(){ del.disabled=false; });
+      }else if(rep){ li.querySelector('.cm-rep').hidden=false; rep.hidden=true; li.querySelector('select').focus(); }
+      else if(can){ li.querySelector('.cm-rep').hidden=true; li.querySelector('[data-rep]').hidden=false; }
+    });
+    document.getElementById('clist').addEventListener('submit',function(e){
+      e.preventDefault();
+      var f=e.target, li=f.closest('li.cm'), b=f.querySelector('button[type=submit]'); b.disabled=true;
+      rpc('report_comment',{p_comment:li.getAttribute('data-id'),p_reason:f.querySelector('select').value,p_details:null}).then(function(){
+        if(!isAlive()) return;
+        f.hidden=true; li.querySelector('.cm-note').textContent='Thanks. Reports are reviewed, and comments that break the rules are removed.';
+      },function(err){ b.disabled=false; li.querySelector('.cm-note').textContent=/too many/.test(err.message)?'You’ve sent a lot of reports today. Try again tomorrow.':'Couldn’t send the report. Try again.'; });
+    });
+  }
+  function paintReact(){
+    var up=document.getElementById('rup'), dn=document.getElementById('rdown');
+    document.getElementById('nup').textContent=fb.up; document.getElementById('ndown').textContent=fb.down;
+    up.setAttribute('aria-pressed',fb.mine===1?'true':'false'); dn.setAttribute('aria-pressed',fb.mine===-1?'true':'false');
+    up.setAttribute('aria-label','Thumbs up, '+fb.up); dn.setAttribute('aria-label','Thumbs down, '+fb.down);
+  }
+  function paintList(){
+    document.getElementById('cmh').textContent='Comments ('+fb.total+')';
+    document.getElementById('csortbox').hidden=fb.total<2;
+    document.getElementById('csort').value=order;
+    var list=document.getElementById('clist');
+    list.innerHTML=fb.comments.length?fb.comments.map(function(c){
+      return '<li class="cm" data-id="'+esc(c.id)+'">'+
+        '<div class="cm-head">'+(c.author_id?'<a href="#/w/'+encodeURIComponent(c.author_id)+'"><b>'+esc(c.author)+'</b></a>':'<b>'+esc(c.author)+'</b>')+' <span class="muted">'+fmtDateTime(Date.parse(c.created_at))+'</span></div>'+
+        '<p class="cm-body">'+esc(c.body)+'</p>'+
+        (user?'<div class="cm-act">'+((c.mine||fb.can_moderate)?'<button type="button" class="linkbtn danger" data-del="'+esc(c.id)+'">Delete</button>':'')+(c.mine?'':'<button type="button" class="linkbtn" data-rep="1">Report</button> <button type="button" class="linkbtn" data-blk="1">Block</button>')+'</div>':'')+
+        '<form class="cm-rep" hidden><label class="sr" for="rs-'+esc(c.id)+'">Reason</label><select id="rs-'+esc(c.id)+'"><option value="harassment">Harassment or hate</option><option value="spam">Spam</option><option value="illegal">Illegal or dangerous</option><option value="copyright">Copied from someone else</option><option value="other">Something else</option></select> <button class="btn" type="submit">Send report</button> <button class="linkbtn" type="button" data-cancel="1">Cancel</button></form>'+
+        '<p class="muted cm-note" aria-live="polite"></p></li>';
+    }).join(''):'<li class="muted">No comments yet.</li>';
+    document.getElementById('cmore').hidden=fb.comments.length>=fb.total;
+  }
+  load(false);
+}
+
+/* ---------- upload: start and workspace ---------- */
+function viewMake(id){
+  document.title='Share work · Handproof';
+  var alive=true; cleanups.push(function(){ alive=false; });
+  if(!cloudOn()){
+    app.innerHTML='<div class="wrap narrow"><h1>Sharing work needs an account</h1><p>This copy of Handproof isn’t connected to a server, so there’s nowhere to upload to.</p></div>';
+    return;
+  }
+  if(!user){
+    app.innerHTML='<div class="wrap narrow"><h1>Share a work</h1><p>Sign in to upload art, photos, music or film with the files that show how it was made.</p><p><a class="btn primary" href="#/account">Sign in or create an account</a></p></div>';
+    return;
+  }
+  if(!id) return makeStart();
+  return workspace(id);
+
+  function makeStart(){
+    app.innerHTML=
+    '<div class="wrap narrow">'+
+      '<h1>Share a work</h1>'+
+      '<p>Upload your work and the files from each stage of making it. Handproof stamps every file with the server’s clock, links them together, and shows the result on a public page.</p>'+
+      '<form id="mf" novalidate>'+
+        '<fieldset class="kinds"><legend>What kind of work is it?</legend>'+
+          Object.keys(KINDS).map(function(k,i){
+            return '<label class="kind"><input type="radio" name="kind" value="'+k+'"'+(i===0?' checked':'')+'><span><b>'+KINDS[k].name+'</b></span></label>';
+          }).join('')+
+        '</fieldset>'+
+        '<label for="mt">Title</label><input class="title-input small" id="mt" type="text" maxlength="120" placeholder="Untitled">'+
+        '<label for="md">About this work <span class="muted">(optional)</span></label><textarea id="md" class="bio-in" maxlength="1000"></textarea>'+
+        '<div class="row" style="margin-top:18px"><button class="btn primary" type="submit" id="mgo">Continue</button> <span class="muted" id="mmsg" role="status" aria-live="polite"></span></div>'+
+      '</form>'+
+    '</div>';
+    document.getElementById('mf').addEventListener('submit',function(e){
+      e.preventDefault();
+      var kind=app.querySelector('input[name=kind]:checked').value, go=document.getElementById('mgo'), m=document.getElementById('mmsg');
+      go.disabled=true; m.textContent='Creating…';
+      rpc('create_work',{p_kind:kind,p_title:document.getElementById('mt').value,p_description:document.getElementById('md').value}).then(function(wid){
+        location.hash='#/make/'+encodeURIComponent(wid);
+      },function(err){ go.disabled=false; if(alive) m.textContent=/too many/.test(err.message)?'You have a lot of unfinished works. Finish or delete one first.':'Couldn’t start this work. '+err.message; });
+    });
+  }
+
+  function workspace(wid){
+    app.innerHTML='<div class="wrap narrow"><p class="muted" role="status">Loading…</p></div>';
+    var d=null, busy=false, pending=[];
+    function load(){
+      return rpc('get_work',{p_work:wid}).then(function(r){
+        if(!alive) return;
+        if(!r || !r.mine){ app.innerHTML='<div class="wrap narrow"><h1>That work isn’t here</h1><p>It may have been deleted.</p><p><a class="btn" href="#/make">Share a work</a></p></div>'; return; }
+        if(r.status!=='draft'){ location.hash='#/m/'+encodeURIComponent(wid); return; }
+        d=r; render();
+      },function(){ if(alive) app.innerHTML='<div class="wrap narrow"><h1>Couldn’t load this work</h1><p>Try again in a moment.</p></div>'; });
+    }
+    function recorderHTML(){
+      var can=!!(navigator.mediaDevices && navigator.mediaDevices.getUserMedia && window.MediaRecorder);
+      return '<div class="panel" id="recpanel"><h2>Record a take here</h2>'+
+        (can?
+          '<p>A take recorded here is checked against the server’s clock: it can only be added if at least as much time passed as the take is long, so a finished recording can’t be uploaded faster than it could have been made. Your microphone is used only while you record, and nothing is sent until you add the take.</p>'+
+          '<div class="row"><button class="btn" type="button" id="recstart">Start recording</button> <button class="btn primary" type="button" id="recstop" hidden>Stop</button> <span class="fp" id="rectime" aria-live="off"></span> <span class="muted" id="recmsg" role="status" aria-live="polite"></span></div>'+
+          '<div id="recdone" hidden><audio id="recplay" controls></audio><div class="row" style="margin-top:10px"><button class="btn primary" type="button" id="recadd">Add this take</button> <button class="btn" type="button" id="recdrop">Discard</button></div></div>'
+        :'<p class="muted">This browser can’t record audio here. You can still upload takes as files below.</p>')+
+        '</div>';
+    }
+    function refreshPub(){ var pb=document.getElementById('pub'), ow=document.getElementById('own'); if(pb&&ow) pb.disabled=!(hasFinal() && ow.checked) || busy; }
+    function wireRecorder(){
+      var bStart=document.getElementById('recstart'); if(!bStart) return;
+      var bStop=document.getElementById('recstop'), tEl=document.getElementById('rectime'), msg=document.getElementById('recmsg');
+      var done=document.getElementById('recdone'), play=document.getElementById('recplay');
+      var st=null, tick=null, take=null, MAXMS=600000;
+      function say(t){ if(alive) msg.textContent=t; }
+      function release(){ if(st&&st.stream){ st.stream.getTracks().forEach(function(t){ t.stop(); }); } clearInterval(tick); tick=null; }
+      function clearTake(){ if(take&&take.url) URL.revokeObjectURL(take.url); take=null; done.hidden=true; play.removeAttribute('src'); }
+      cleanups.push(function(){ try{ if(st&&st.rec&&st.rec.state!=='inactive') st.rec.stop(); }catch(e){} release(); clearTake(); });
+      function pickType(){
+        var c=['audio/webm;codecs=opus','audio/webm','audio/ogg;codecs=opus','audio/mp4']; 
+        for(var i=0;i<c.length;i++){ try{ if(MediaRecorder.isTypeSupported(c[i])) return c[i]; }catch(e){} }
+        return '';
+      }
+      bStart.addEventListener('click',function(){
+        clearTake(); bStart.disabled=true; say('Asking for your microphone…');
+        navigator.mediaDevices.getUserMedia({audio:true}).then(function(stream){
+          return rpc('start_take',{p_work:wid}).then(function(sess){
+            if(!alive){ stream.getTracks().forEach(function(t){ t.stop(); }); return; }
+            var type=pickType(), rec;
+            try{ rec=type?new MediaRecorder(stream,{mimeType:type}):new MediaRecorder(stream); }catch(e){ stream.getTracks().forEach(function(t){ t.stop(); }); throw new Error('This browser can’t record in a supported format.'); }
+            st={stream:stream,rec:rec,chunks:[],session:sess.session,t0:0,claimed:0};
+            rec.ondataavailable=function(e){ if(e.data&&e.data.size) st.chunks.push(e.data); };
+            rec.onstop=function(){
+              var base=String(rec.mimeType||type||'audio/webm').split(';')[0];
+              var blob=new Blob(st.chunks,{type:base});
+              release(); bStop.hidden=true; bStart.hidden=false; bStart.disabled=false; tEl.textContent='';
+              if(!alive) return;
+              if(st.claimed<1000){ say('That take was under a second. Record again.'); return; }
+              take={blob:blob,mime:base,claimed:st.claimed,session:st.session,url:URL.createObjectURL(blob)};
+              play.src=take.url; done.hidden=false; say('Recorded '+fmtDur(Math.round(st.claimed/1000))+'. Listen, then add it or discard it.');
+            };
+            rec.start(1000);
+            st.t0=performance.now(); bStart.hidden=true; bStop.hidden=false; bStop.focus(); say('Recording…');
+            tick=setInterval(function(){
+              var ms=performance.now()-st.t0; tEl.textContent=fmtClock(Math.floor(ms/1000));
+              if(ms>=MAXMS) bStop.click();
+            },250);
+          });
+        }).catch(function(e){
+          bStart.disabled=false; if(!alive) return;
+          say(e&&e.name==='NotAllowedError'?'Microphone access was blocked. Allow it in your browser’s site settings and try again.':(e&&e.name==='NotFoundError'?'No microphone was found.':((e&&e.message)||'Couldn’t start recording.')));
+        });
+      });
+      bStop.addEventListener('click',function(){
+        if(!st||!st.rec||st.rec.state==='inactive') return;
+        st.claimed=Math.round(performance.now()-st.t0); bStop.disabled=true;
+        try{ st.rec.stop(); }catch(e){} bStop.disabled=false;
+      });
+      document.getElementById('recdrop').addEventListener('click',function(){ clearTake(); say(''); });
+      document.getElementById('recadd').addEventListener('click',function(){
+        if(!take||busy) return; var b=this; b.disabled=true; busy=true; refreshPub(); say('Adding the take…');
+        var t=take, n=d.items.filter(function(i){ return i.role==='live'; }).length+1;
+        var ext=/mp4/.test(t.mime)?'m4a':(/ogg/.test(t.mime)?'ogg':'webm'), name='take-'+n+'.'+ext;
+        t.blob.arrayBuffer().then(function(buf){
+          var u8=new Uint8Array(buf);
+          return sha256Hex(u8).then(function(h){
+            var path=user.id+'/'+wid+'/'+uuid4()+'-'+name, bucket=sb.storage.from('works');
+            return Promise.resolve(bucket.upload(path,t.blob,{contentType:t.mime,upsert:false})).then(function(res){
+              if(res.error) throw new Error(res.error.message||'Upload failed');
+              return rpc('add_live_take',{p_session:t.session,p_path:path,p_filename:name,p_mime:t.mime,p_bytes:u8.length,p_sha256:h,p_claimed_ms:t.claimed}).then(null,function(e){
+                return Promise.resolve(bucket.remove([path])).then(function(){},function(){}).then(function(){ throw e; });
+              });
+            });
+          });
+        }).then(function(){
+          busy=false; clearTake(); return load().then(function(){ var m=document.getElementById('recmsg'); if(m) m.textContent='Added '+name+'. The server clock confirmed it.'; });
+        },function(e){
+          busy=false; if(!alive) return; b.disabled=false; refreshPub(); say((e&&e.message)||'Couldn’t add that take.');
+        });
+      });
+    }
+    function wireRelease(){
+      var el=document.getElementById('wrel'); if(!el) return; var m=document.getElementById('wrelmsg');
+      el.addEventListener('change',function(){
+        rpc('set_release_link',{p_work:wid,p_url:el.value}).then(function(u){ if(alive){ el.value=u||''; m.textContent=u?'Saved.':'Cleared.'; } },function(e){ if(alive) m.textContent=(e&&e.message)||'Couldn’t save that link.'; });
+      });
+    }
+    function itemsHTML(){
+      var shown=d.items.filter(function(i){ return i.role!=='thumb'; });
+      if(!shown.length) return '<p class="muted">No files yet. Add some below.</p>';
+      return '<div class="rows">'+shown.map(function(i){
+        return '<div class="rowitem wfile"><span><b>'+esc(i.filename)+'</b>'+liveNote(i)+'</span><span class="hide-s muted">'+fmtBytes(i.bytes)+'</span><span><span class="chip'+(i.role==='final'?' good':'')+'">'+esc(ROLE_LABEL[i.role]||i.role)+'</span></span><span class="hide-s muted">#'+i.seq+'</span></div>';
+      }).join('')+'</div>';
+    }
+    function hasFinal(){ return d.items.some(function(i){ return i.role==='final'; }); }
+    function render(){
+      var k=KINDS[d.kind];
+      app.innerHTML=
+      '<div class="wrap narrow">'+
+        '<p class="byline work-top"><span class="chip '+(KIND_CHIP[d.kind]||'')+'">'+esc(k.name)+'</span> Draft, private until you publish</p>'+
+        '<h1>Add your files</h1>'+
+        '<p>'+esc(k.tip)+'</p>'+
+        '<label for="wt">Title</label><input class="title-input small" id="wt" type="text" maxlength="120" value="'+esc(d.title)+'">'+
+        '<label for="wd">About this work <span class="muted">(optional)</span></label><textarea id="wd" class="bio-in" maxlength="1000">'+esc(d.description||'')+'</textarea>'+
+        (d.kind==='music'?'<label for="wrel">Link to the released track <span class="muted">(optional, https only)</span></label><input class="title-input small" id="wrel" type="url" maxlength="263" placeholder="https://" value="'+esc(d.release_url||'')+'"><p class="muted small-note" id="wrelmsg" role="status" aria-live="polite">Shown on the page as a link from the artist. Handproof doesn’t check it.</p>':'')+
+        '<h2 style="margin-top:30px">Files, in the order the server received them</h2>'+
+        '<div id="wl">'+itemsHTML()+'</div>'+
+        '<div class="row" style="margin-top:10px"><button class="btn" type="button" id="undo"'+(d.items.length?'':' disabled')+'>Remove the last file</button></div>'+
+        (d.kind==='music'?recorderHTML():'')+
+        '<div class="panel">'+
+          '<h2>Add files</h2>'+
+          '<label for="wr">What are these files?</label>'+
+          '<select id="wr">'+
+            '<option value="process">Work in progress</option>'+
+            '<option value="original">Original or source file</option>'+
+            '<option value="project">Project file (zip)</option>'+
+            '<option value="final">Finished work</option>'+
+          '</select>'+
+          '<p class="muted small-note" id="whelp"></p>'+
+          '<label for="wf">Choose files</label>'+
+          '<input type="file" id="wf" multiple accept="'+esc(k.accept)+'">'+
+          '<div id="gps" hidden class="banner bad"><p style="margin:0 0 8px"><b id="gpsn"></b> Photos can carry the exact place they were taken, and everything you publish is public.</p>'+
+            '<label class="inline" style="font-weight:500"><input type="checkbox" id="strip" checked> Remove location and camera details from these files before uploading (recommended)</label></div>'+
+          '<div class="row" style="margin-top:14px"><button class="btn primary" type="button" id="up" disabled>Upload</button> <span class="muted" id="umsg" role="status" aria-live="polite"></span></div>'+
+        '</div>'+
+        '<div class="panel">'+
+          '<h2>Publish</h2>'+
+          '<p>'+(hasFinal()?'Publishing makes this page and every file on it viewable, and locks the files so they can’t be changed.':'Add the finished work first. '+esc(k.final))+'</p>'+
+          visPickerHTML('wvis','public')+
+          '<label class="inline" style="font-weight:500"><input type="checkbox" id="own"> I made this work, I have the right to share every file, and I accept the <a href="#/terms" target="_blank" rel="noopener">Terms</a>.</label>'+
+          '<div class="row" style="margin-top:14px"><button class="btn primary" type="button" id="pub" disabled>Publish</button> <button class="linkbtn danger" type="button" id="del">Delete this draft</button> <span class="muted" id="pmsg" role="status" aria-live="polite"></span></div>'+
+        '</div>'+
+        '<div class="gap"></div>'+
+      '</div>';
+      var wr=document.getElementById('wr'), help=document.getElementById('whelp');
+      function roleHelp(){
+        var r=wr.value;
+        help.textContent=r==='final'?k.final:r==='project'?'A zipped project file from the app you made this in.':r==='original'?'The untouched source: a camera original, a raw recording, or a source file.':'Anything that shows the work taking shape: sketches, takes, stems, progress cuts.';
+      }
+      wr.addEventListener('change',roleHelp); roleHelp();
+      var fi=document.getElementById('wf'), up=document.getElementById('up'), umsg=document.getElementById('umsg');
+      function syncPub(){ document.getElementById('pub').disabled=!(hasFinal() && document.getElementById('own').checked) || busy; }
+      document.getElementById('own').addEventListener('change',syncPub);
+      fi.addEventListener('change',function(){
+        pending=Array.prototype.slice.call(fi.files||[]);
+        up.disabled=!pending.length || busy;
+        var gps=document.getElementById('gps'); gps.hidden=true; umsg.textContent='';
+        var jpgs=pending.filter(function(f){ return fileMime(f)==='image/jpeg'; });
+        Promise.all(jpgs.map(function(f){ return f.slice(0,262144).arrayBuffer().then(function(b){ return jpegHasGps(new Uint8Array(b)); }).catch(function(){ return false; }); })).then(function(res){
+          var n=res.filter(Boolean).length;
+          if(n && alive){ document.getElementById('gpsn').textContent=(n===1?'One of these photos contains':n+' of these photos contain')+' GPS location data.'; gps.hidden=false; }
+        });
+      });
+      up.addEventListener('click',function(){
+        if(!pending.length||busy) return;
+        busy=true; up.disabled=true; syncPub();
+        var role=wr.value, strip=document.getElementById('strip').checked, list=pending.slice(), bad=0, done=0, lastErr='';
+        (function next(i){
+          if(i>=list.length){
+            busy=false; pending=[];
+            load().then(function(){
+              var m=document.getElementById('umsg'); if(!m) return;
+              m.textContent=bad?((done?'Uploaded '+done+' of '+list.length+'. ':'')+lastErr):('Uploaded '+plural(done,'file')+'.');
+            });
+            return;
+          }
+          uploadOne(wid,d.kind,role,list[i],strip,function(t){ var m=document.getElementById('umsg'); if(m) m.textContent=t; }).then(function(){ done++; },function(err){
+            bad++; lastErr=list[i].name+': '+(err&&err.message||'upload failed');
+          }).then(function(){ next(i+1); });
+        })(0);
+      });
+      document.getElementById('undo').addEventListener('click',function(){
+        var b=this; b.disabled=true;
+        rpc('undo_last_item',{p_work:wid}).then(function(p){ if(p) return removeFiles([p]); }).then(function(){ return load(); });
+        /* a removed image's preview file is left behind and removed with the draft */
+      });
+      if(d.kind==='music'){ wireRecorder(); wireRelease(); }
+      var saveT=null;
+      function saveDetails(){ return rpc('update_work',{p_work:wid,p_title:document.getElementById('wt').value,p_description:document.getElementById('wd').value}); }
+      ['wt','wd'].forEach(function(x){ document.getElementById(x).addEventListener('change',function(){ saveDetails().catch(function(){}); }); });
+      document.getElementById('pub').addEventListener('click',function(){
+        var b=this, m=document.getElementById('pmsg'); b.disabled=true; m.textContent='Publishing…';
+        rpc('set_visibility',{p_kind:'work',p_id:wid,p_value:visValue('wvis')}).then(function(){ return rpc('publish_work',{p_work:wid,p_title:document.getElementById('wt').value,p_description:document.getElementById('wd').value}); }).then(function(){
+          location.hash='#/m/'+encodeURIComponent(wid);
+        },function(err){ b.disabled=false; if(alive) m.textContent=/daily/.test(err.message)?'You’ve reached the daily publishing limit. Try again tomorrow.':err.message; });
+      });
+      document.getElementById('del').addEventListener('click',function(){
+        if(!confirm('Delete this draft and all of its files? This can’t be undone.')) return;
+        rpc('delete_work',{p_work:wid}).then(function(paths){ return removeFiles(paths||[]); }).then(function(){ location.hash='#/account'; });
+      });
+      syncPub();
+    }
+    load();
+  }
+}
+
+function uploadOne(workId,kind,role,file,strip,say){
+  var mime=fileMime(file), bad=fileProblem(kind,role,mime,file.size);
+  if(bad) return Promise.reject(new Error(bad));
+  var bucket=sb.storage.from('works');
+  say('Reading '+file.name+'…');
+  function putAndRegister(blob,u8,r,name,type){
+    return sha256Hex(u8).then(function(h){
+      var path=user.id+'/'+workId+'/'+uuid4()+'-'+safeName(name);
+      return Promise.resolve(bucket.upload(path,blob,{contentType:type,upsert:false})).then(function(res){
+        if(res.error) throw new Error(/exceed|too large|size/i.test(res.error.message||'')?'That file is too large.':(res.error.message||'Upload failed'));
+        return rpc('add_work_item',{p_work:workId,p_role:r,p_path:path,p_filename:name.slice(0,200),p_mime:type,p_bytes:u8.length,p_sha256:h}).then(null,function(e){
+          return Promise.resolve(bucket.remove([path])).then(function(){},function(){}).then(function(){ throw e; });
+        });
+      });
+    });
+  }
+  return file.arrayBuffer().then(function(buf){
+    var u8=new Uint8Array(buf);
+    if(strip && mime==='image/jpeg') u8=stripJpegMeta(u8);
+    var blob=new Blob([u8],{type:mime});
+    say('Uploading '+file.name+'…');
+    return putAndRegister(blob,u8,role,file.name,mime).then(function(){
+      if(role!=='final' || mime.indexOf('image/')!==0) return;
+      return makeThumb(blob).then(function(tb){
+        if(!tb) return;
+        return tb.arrayBuffer().then(function(tbuf){ return putAndRegister(tb,new Uint8Array(tbuf),'thumb','preview.jpg','image/jpeg'); }).catch(function(){});
+      });
+    });
+  });
+}
+
+/* ---------- a published work ---------- */
+function viewWork(id){
+  document.title='Handproof';
+  var alive=true; cleanups.push(function(){ alive=false; });
+  function missing(msg){
+    document.title='Not found · Handproof';
+    app.innerHTML='<div class="wrap narrow"><h1>That work isn’t here</h1><p>'+esc(msg)+'</p><p><a class="btn" href="#/browse">Browse work</a></p></div>';
+  }
+  if(!cloudOn()){ missing('Public links only work on a site that has accounts turned on.'); return; }
+  if(!/^[0-9a-f-]{36}$/i.test(id)){ missing('That link doesn’t look right.'); return; }
+  app.innerHTML='<div class="wrap narrow"><p class="muted" role="status">Loading…</p></div>';
+  rpc('get_work',{p_work:id}).then(function(d){
+    if(!alive) return;
+    if(!d){ missing('It may have been deleted, removed, or never published.'); return; }
+    if(d.status==='draft'){ location.hash='#/make/'+encodeURIComponent(id); return; }
+    var k=KINDS[d.kind]||{name:d.kind}, v=d.verification||{};
+    var items=d.items||[], shown=items.filter(function(i){ return i.role!=='thumb'; });
+    var finals=items.filter(function(i){ return i.role==='final'; });
+    var t0=shown.length?Date.parse(shown[0].received_at):0;
+    document.title=d.title+' · Handproof';
+    var ver=v.chain_ok!==true
+      ? '<p class="banner bad">The stored record no longer matches its checksums. Don’t rely on this timeline.</p>'
+      : '<p class="banner good">The record is intact. The server received '+plural(shown.length,'file')+(v.server_span_seconds>0?' over '+fmtDur(v.server_span_seconds):'')+' by its own clock, and the chain of checksums still matches.</p>';
+    app.innerHTML=
+    '<div class="wrap">'+
+      '<p class="byline work-top"><span class="chip '+(KIND_CHIP[d.kind]||'')+'">'+esc(k.name)+'</span></p>'+
+      '<h1>'+esc(d.title)+'</h1>'+
+      '<p class="byline">by '+(d.author_id?'<a href="#/w/'+encodeURIComponent(d.author_id)+'">'+esc(d.author)+'</a>':esc(d.author))+', published '+fmtDate(Date.parse(d.published_at))+'</p>'+
+      visNoteHTML(d.visibility)+
+      (d.description?'<p class="pf-bio">'+esc(d.description)+'</p>':'')+
+      releaseHTML(d.release_url)+
+      '<div id="main" class="work-main"></div>'+
+      '<div class="panel verify" id="verify">'+
+        '<h2>Server record</h2>'+ver+
+        '<dl class="facts-list"><dt>Files</dt><dd>'+plural(shown.length,'file')+'</dd>'+liveFactsHTML(d.kind,items,v)+'<dt>Fingerprint</dt><dd class="fp" title="'+esc(v.head_hash||'')+'">'+esc((v.head_hash||'').slice(0,16))+'…</dd></dl>'+
+        '<p><button class="btn" type="button" id="chk">Check the files in your browser</button> <span class="muted" id="chkmsg" role="status" aria-live="polite"></span></p>'+
+        '<p class="muted">Each file’s checksum was recorded when it arrived, and the checks above link them in order, so changing a file or the order afterwards shows up. This shows how the work was put together, not that a person made every part: it can’t tell whether AI-made material is inside the files.</p>'+
+      '</div>'+
+      '<h2 style="margin-top:30px">Files, in the order the server received them</h2>'+
+      '<div class="rows" id="files">'+shown.map(function(i){
+        var off=Math.max(0,Math.round((Date.parse(i.received_at)-t0)/1000));
+        return '<div class="rowitem wfile" data-seq="'+i.seq+'">'+
+          '<span><a href="#" data-dl="'+esc(i.path)+'" data-name="'+esc(i.filename)+'"><b>'+esc(i.filename)+'</b></a>'+liveNote(i)+'</span>'+
+          '<span class="hide-s muted">'+fmtBytes(i.bytes)+'</span>'+
+          '<span><span class="chip'+(i.role==='final'?' good':(i.role==='live'?' blue':''))+'">'+esc(ROLE_LABEL[i.role]||i.role)+'</span></span>'+
+          '<span class="hide-s muted">'+(off?'+'+fmtDur(off):'first')+'</span>'+
+          '<span class="muted" data-res aria-live="polite"></span></div>';
+      }).join('')+'</div>'+
+      '<p style="margin-top:18px"><button class="btn" type="button" id="link">Copy link to this page</button> <span class="muted" id="copied" aria-live="polite"></span></p>'+
+      (d.mine?ownerVisHTML(d):'')+
+      '<div id="fb" class="feedback"></div>'+
+      '<div class="report-box">'+
+        '<button class="linkbtn" type="button" id="reportopen" aria-expanded="false" aria-controls="reportform">Report this work</button>'+
+        '<form id="reportform" hidden novalidate>'+
+          '<label for="rr">What’s wrong with it?</label>'+
+          '<select id="rr">'+
+            '<option value="ai_or_retyped">Made by AI, or AI work passed off as human-made</option>'+
+            '<option value="copyright">Copied from someone else</option>'+
+            '<option value="harassment">Harassment or hate</option>'+
+            '<option value="illegal">Illegal or dangerous</option>'+
+            '<option value="spam">Spam</option>'+
+            '<option value="other">Something else</option>'+
+          '</select>'+
+          '<label for="rdet">Details <span class="muted">(optional, up to 1,000 characters)</span></label>'+
+          '<textarea id="rdet" maxlength="1000"></textarea>'+
+          '<div class="actions" style="margin-bottom:10px"><button class="btn primary" type="submit" id="rsend">Send report</button> <button class="btn" type="button" id="rcancel">Cancel</button></div>'+
+        '</form>'+
+        '<p class="muted" id="rmsg" aria-live="polite"></p>'+
+      '</div>'+
+      '<div class="gap"></div>'+
+    '</div>';
+
+    setRobots(d.visibility==='unlisted'); wireOwnerVis('work',d.id,function(){ return alive; });
+    mountFeedback(document.getElementById('fb'),'work',d.id,function(){ return alive; });
+    var allPaths=items.map(function(i){ return i.path; });
+    var main=document.getElementById('main');
+    signedUrls(allPaths).then(function(m){
+      if(!alive) return;
+      main.innerHTML=finals.map(function(f){
+        var u=m[f.path]; if(!u) return '<p class="muted">Couldn’t load '+esc(f.filename)+'.</p>';
+        if(f.mime.indexOf('image/')===0) return '<figure class="work-fig"><img class="work-img" alt="'+esc(d.title)+'" src="'+esc(u)+'"></figure>';
+        if(f.mime.indexOf('audio/')===0) return '<figure class="work-fig"><figcaption>'+esc(f.filename)+'</figcaption><audio controls preload="none" src="'+esc(u)+'"></audio></figure>';
+        if(f.mime.indexOf('video/')===0) return '<figure class="work-fig"><video class="work-vid" controls preload="metadata" playsinline src="'+esc(u)+'"></video></figure>';
+        return '';
+      }).join('');
+      /* images among the process files get small previews */
+      shown.forEach(function(i){
+        if(i.role!=='final' && i.mime.indexOf('image/')===0 && m[i.path]){
+          var row=app.querySelector('#files [data-seq="'+i.seq+'"]'); if(!row) return;
+          var im=document.createElement('img'); im.className='row-thumb'; im.alt=''; im.loading='lazy'; im.src=m[i.path];
+          row.firstChild.insertBefore(im,row.firstChild.firstChild);
+        }
+      });
+    },function(){ if(alive) main.innerHTML='<p class="muted">Couldn’t load the files right now. Try again in a moment.</p>'; });
+
+    document.getElementById('files').addEventListener('click',function(e){
+      var a=e.target.closest('[data-dl]'); if(!a) return;
+      e.preventDefault();
+      signedUrls([a.getAttribute('data-dl')]).then(function(m){
+        var u=m[a.getAttribute('data-dl')]; if(!u) return;
+        var l=document.createElement('a'); l.href=u; l.download=a.getAttribute('data-name'); l.rel='noopener'; document.body.appendChild(l); l.click(); l.remove();
+      },function(){});
+    });
+    var chk=document.getElementById('chk'), cm=document.getElementById('chkmsg');
+    chk.addEventListener('click',function(){
+      chk.disabled=true; var ok=0, badN=0, i=0;
+      signedUrls(allPaths).then(function(m){
+        (function next(){
+          if(i>=shown.length || !alive){
+            chk.disabled=false;
+            cm.textContent=badN?(badN+' of '+shown.length+' files do not match their recorded checksums.'):('All '+plural(shown.length,'file')+' match the checksums recorded when they arrived.');
+            return;
+          }
+          var it=shown[i++]; cm.textContent='Checking '+it.filename+'…';
+          var row=app.querySelector('#files [data-seq="'+it.seq+'"] [data-res]');
+          fetch(m[it.path]).then(function(r){ if(!r.ok) throw new Error('x'); return r.arrayBuffer(); })
+            .then(function(b){ return sha256Hex(new Uint8Array(b)); })
+            .then(function(h){ if(h===it.sha256){ ok++; if(row) row.textContent='Matches'; } else { badN++; if(row) row.textContent='Does not match'; } },
+                  function(){ badN++; if(row) row.textContent='Couldn’t read'; })
+            .then(next);
+        })();
+      },function(){ chk.disabled=false; cm.textContent='Couldn’t load the files right now.'; });
+    });
+    var c=document.getElementById('copied');
+    document.getElementById('link').addEventListener('click',function(){ copyText(location.href,c,'Copied the link'); });
+    var rf=document.getElementById('reportform'), ro=document.getElementById('reportopen'), rm=document.getElementById('rmsg');
+    function toggle(open){ rf.hidden=!open; ro.setAttribute('aria-expanded',open?'true':'false'); if(open) document.getElementById('rr').focus(); }
+    ro.addEventListener('click',function(){ rm.textContent=''; toggle(rf.hidden); });
+    document.getElementById('rcancel').addEventListener('click',function(){ toggle(false); ro.focus(); });
+    rf.addEventListener('submit',function(e){
+      e.preventDefault();
+      var send=document.getElementById('rsend'); send.disabled=true; rm.textContent='Sending…';
+      rpc('report_work',{p_work:d.id,p_reason:document.getElementById('rr').value,p_details:document.getElementById('rdet').value}).then(function(){
+        if(!alive) return;
+        toggle(false); document.getElementById('rdet').value=''; send.disabled=false;
+        rm.textContent='Thanks. Reports are reviewed, and work that breaks the rules is removed.';
+      },function(err){
+        if(!alive) return; send.disabled=false;
+        rm.textContent=/too many reports/.test(err.message)?'You’ve sent a lot of reports today. Try again tomorrow.':'Couldn’t send the report. Try again in a moment.';
+      });
+    });
+  },function(){ if(alive) missing('The server couldn’t be reached. Try again in a moment.'); });
+}
+
+/* ---------- public writer page ---------- */
+/* ---------- who can find it: public or link only ---------- */
+var VIS_TEXT={
+  public:['Public','Listed in Browse and on your writer page.'],
+  unlisted:['Link only','Not listed anywhere. Anyone who has the link can open it, with all its files, and can pass the link on. Don’t use this for anything secret.']
+};
+function visPickerHTML(name,cur,legend,opts){
+  opts=opts||[['public'].concat(VIS_TEXT.public),['unlisted'].concat(VIS_TEXT.unlisted)];
+  return '<fieldset class="vis"><legend>'+(legend||'Who can find it')+'</legend>'+opts.map(function(o){
+    return '<label class="vis-opt"><input type="radio" name="'+name+'" value="'+o[0]+'"'+(cur===o[0]?' checked':'')+'><span><b>'+o[1]+'</b><small>'+o[2]+'</small></span></label>';
+  }).join('')+'</fieldset>';
+}
+function visValue(name){ var el=document.querySelector('input[name="'+name+'"]:checked'); return el?el.value:'public'; }
+function setRobots(on){
+  var m=document.querySelector('meta[name="robots"][data-dyn]');
+  if(on){
+    if(!m){ m=document.createElement('meta'); m.setAttribute('name','robots'); m.setAttribute('data-dyn','1'); document.head.appendChild(m); }
+    m.setAttribute('content','noindex, nofollow');
+  }else if(m){ m.parentNode.removeChild(m); }
+}
+function visNoteHTML(v){
+  return '<p id="visnote"'+(v==='unlisted'?'':' hidden')+'><span class="chip">Link only</span> <span class="muted">Not listed in Browse. Only people with this link can find it.</span></p>';
+}
+/* the owner's own panel on a published piece or work: change who can find it, and copy the link */
+function ownerVisHTML(d){
+  return '<div class="panel" id="vispanel"><h2>Sharing</h2>'+visPickerHTML('vis',d.visibility||'public')+
+    '<p><button class="btn" type="button" id="vissave">Save</button> <span class="muted" id="vismsg" role="status" aria-live="polite"></span></p>'+
+    (d.kind==='music'?'<label for="relin">Link to the released track <span class="muted">(optional, https only)</span></label><div class="linkbox"><input class="title-input small" id="relin" type="url" maxlength="263" placeholder="https://" value="'+esc(d.release_url||'')+'"> <button class="btn" type="button" id="relsave">Save link</button></div>':'')+
+    '<div class="linkbox"><input class="title-input small" id="vislink" type="text" readonly aria-label="Link to this page" value="'+esc(location.href)+'"> <button class="btn" type="button" id="vscopy">Copy link</button></div></div>';
+}
+function wireOwnerVis(kind,id,isAlive){
+  var save=document.getElementById('vissave'); if(!save) return;
+  var msg=document.getElementById('vismsg'), note=document.getElementById('visnote');
+  save.addEventListener('click',function(){
+    var v=visValue('vis'); save.disabled=true; msg.textContent='Saving…';
+    rpc('set_visibility',{p_kind:kind,p_id:id,p_value:v}).then(function(){
+      if(!isAlive()) return;
+      save.disabled=false; msg.textContent=v==='unlisted'?'Saved. It’s now link only.':'Saved. It’s now public and listed in Browse.';
+      if(note) note.hidden=v!=='unlisted';
+      setRobots(v==='unlisted');
+    },function(e){ if(isAlive()){ save.disabled=false; msg.textContent='Couldn’t save that: '+((e&&e.message)||'try again'); } });
+  });
+  var rs=document.getElementById('relsave');
+  if(rs) rs.addEventListener('click',function(){
+    var el=document.getElementById('relin'); msg.textContent='Saving…';
+    rpc('set_release_link',{p_work:id,p_url:el.value}).then(function(u){ if(!isAlive()) return; el.value=u||''; msg.textContent=u?'Saved the release link. Reload to see it on the page.':'Cleared the release link.'; },function(e){ if(isAlive()) msg.textContent=(e&&e.message)||'Couldn’t save that link.'; });
+  });
+  document.getElementById('vscopy').addEventListener('click',function(){
+    var el=document.getElementById('vislink'); el.focus(); el.select();
+    copyText(el.value,msg,'Copied the link');
+  });
+}
+function safeUrl(u){ return /^https?:\/\/[^\s]+$/i.test(u||''); }
+function contactHTML(c){
+  c=(c||'').trim(); if(!c) return '';
+  if(/^[^\s@<>"']+@[^\s@<>"']+\.[^\s@<>"']+$/.test(c)) return '<a href="mailto:'+esc(c)+'">'+esc(c)+'</a>';
+  if(safeUrl(c)) return '<a href="'+esc(c)+'" rel="noopener noreferrer nofollow ugc" target="_blank">'+esc(c)+'</a>';
+  return esc(c);
+}
+function viewWriter(id){
+  document.title='Handproof';
+  var alive=true; cleanups.push(function(){ alive=false; });
+  function missing(msg){
+    document.title='Not found · Handproof';
+    app.innerHTML='<div class="wrap narrow"><h1>That profile isn’t here</h1><p>'+esc(msg)+'</p><p><a class="btn" href="#/browse">Browse work</a></p></div>';
+  }
+  if(!cloudOn()){ missing('Profiles only work on a site that has accounts turned on.'); return; }
+  app.innerHTML='<div class="wrap narrow"><p class="muted" role="status">Loading…</p></div>';
+  if(!/^[0-9a-f-]{36}$/i.test(id)){ missing('That link doesn’t look right.'); return; }
+  rpc('get_public_profile',{p_id:id}).then(function(d){
+    if(!alive) return;
+    if(!d){ missing('The account may have been deleted.'); return; }
+    document.title=d.name+' · Handproof';
+    setRobots(d.visibility==='link');
+    var list=(d.pieces||[]).map(cloudPiece);
+    var links=[];
+    if(d.website && safeUrl(d.website)) links.push('<p class="pf-line"><span class="muted">Website</span> <a href="'+esc(d.website)+'" rel="noopener noreferrer nofollow ugc" target="_blank">'+esc(d.website.replace(/^https?:\/\//i,''))+'</a></p>');
+    if(d.contact) links.push('<p class="pf-line"><span class="muted">Contact</span> '+contactHTML(d.contact)+'</p>');
+    app.innerHTML=
+    '<div class="wrap">'+
+      '<div class="who"><div class="avatar" aria-hidden="true">'+esc((d.name||'W').charAt(0).toUpperCase())+'</div>'+
+        '<div><h1 style="margin:0">'+esc(d.name)+'</h1><p class="byline" style="margin:4px 0 0">On Handproof since '+fmtDate(Date.parse(d.joined))+'</p></div></div>'+
+      (d.mine&&d.visibility==='link'?'<p><span class="chip">Link only</span> <span class="muted">This page isn’t linked from your pieces. Only people with its address can find it. Change this in Account.</span></p>':'')+
+      (d.bio?'<p class="pf-bio">'+esc(d.bio)+'</p>':'')+
+      links.join('')+
+      (user&&!d.mine?'<p id="blkrow">'+(d.blocked?'<span class="chip">Blocked</span> <span class="muted">You don’t see their work or comments.</span> ':'')+'<button class="linkbtn" type="button" id="blkbtn">'+(d.blocked?'Unblock this person':'Block this person')+'</button> <span class="muted" id="blkmsg" role="status" aria-live="polite"></span></p>':'')+
+      '<h2 style="margin-top:34px">'+((list.length||(d.works||[]).length)?'Published work':'No published work yet')+'</h2>'+
+      '<div class="grid" id="wgrid">'+(d.works||[]).map(workTileHTML).join('')+list.map(tileHTML).join('')+'</div>'+
+    '</div>';
+    hydrateImages(document.getElementById('wgrid'));
+    var bb=document.getElementById('blkbtn');
+    if(bb) bb.addEventListener('click',function(){
+      var msg=document.getElementById('blkmsg');
+      if(!d.blocked && !confirm('Block '+d.name+'? You won’t see their comments or work, and they won’t be able to comment on yours. They aren’t told. You can undo this in Account.')) return;
+      bb.disabled=true;
+      rpc(d.blocked?'unblock_user':'block_user',{p_id:d.id}).then(function(){ if(alive) viewWriter(id); },function(){ bb.disabled=false; if(alive) msg.textContent='Couldn’t do that just now. Try again.'; });
+    });
+  },function(){ if(alive) missing('Couldn’t load this profile right now. Try again in a moment.'); });
+}
+
+/* ---------- router ---------- */
+function route(){
+  cleanups.forEach(function(f){ try{ f(); }catch(e){} });
+  cleanups=[]; setRobots(false);
+  var parts=(location.hash||'#/').split('/'), a=parts[1]||'', b=parts.slice(2).join('/');
+  var links=document.querySelectorAll('.top nav a');
+  for(var i=0;i<links.length;i++){
+    if(links[i].getAttribute('data-route')===(a==='artists'?'browse':a)) links[i].setAttribute('aria-current','page');
+    else links[i].removeAttribute('aria-current');
+  }
+  if(a==='write') viewEditor();
+  else if(a==='browse') viewBrowse();
+  else if(a==='artists') viewArtists();
+  else if(a==='piece'){ var id=b; try{ id=decodeURIComponent(b); }catch(e){} viewPiece(id); }
+  else if(a==='p'){ var pid=b; try{ pid=decodeURIComponent(b); }catch(e){} viewPublic(pid); }
+  else if(a==='make'){ var mid=b; try{ mid=decodeURIComponent(b); }catch(e){} viewMake(mid); }
+  else if(a==='m'){ var xid=b; try{ xid=decodeURIComponent(b); }catch(e){} viewWork(xid); }
+  else if(a==='w'){ var wid=b; try{ wid=decodeURIComponent(b); }catch(e){} viewWriter(wid); }
+  else if(a==='account') viewAccount();
+  else if(a==='terms') viewLegal('terms');
+  else if(a==='privacy') viewLegal('privacy');
+  else if(a==='profile') viewProfile();
+  else viewLanding();
+  window.scrollTo(0,0);
+}
+window.addEventListener('hashchange',route);
+route();
+initAuth();
+
+/* ---------- installable app ---------- */
+(function(){
+  var bar=document.getElementById('installbar'), btn=document.getElementById('installbtn'), hint=document.getElementById('installhint'), deferred=null;
+  var standalone=(window.matchMedia&&window.matchMedia('(display-mode: standalone)').matches)||window.navigator.standalone===true;
+  if(standalone) return;
+  window.addEventListener('beforeinstallprompt',function(e){ e.preventDefault(); deferred=e; hint.textContent=''; btn.hidden=false; bar.hidden=false; });
+  window.addEventListener('appinstalled',function(){ deferred=null; bar.hidden=true; });
+  btn.addEventListener('click',function(){
+    if(!deferred) return; var d=deferred; deferred=null; bar.hidden=true;
+    try{ d.prompt(); }catch(e){}
+  });
+  /* iPhone and iPad have no install button, so say how */
+  if(/iphone|ipad|ipod/i.test(navigator.userAgent) && !/crios|fxios/i.test(navigator.userAgent)){
+    btn.hidden=true; hint.textContent='To install on iPhone or iPad: tap Share, then Add to Home Screen.'; bar.hidden=false;
+  }
+  if('serviceWorker' in navigator){
+    window.addEventListener('load',function(){ navigator.serviceWorker.register('sw.js').catch(function(){}); });
+  }
+})();
+
+})();
+</script>
+</body>
+</html>
