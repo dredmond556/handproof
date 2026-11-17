@@ -166,6 +166,10 @@
   .stat span{font-size:14px; color:var(--stone);}
   .actions{display:flex; gap:10px; align-items:center; flex-wrap:wrap; margin:22px 0 70px;}
   .byline{color:var(--stone); margin:0 0 6px;}
+  .pagenote{max-width:62ch; margin:12px 0 16px; line-height:1.55;}
+  .sumline{margin:0 0 18px;}
+  details.how summary{cursor:pointer; font-weight:600; margin-top:10px;}
+  details.how[open] summary{margin-bottom:10px;}
   .pf-bio{white-space:pre-wrap; max-width:62ch; font-size:18px; line-height:1.65; margin:0 0 18px;}
   .pf-line{margin:0 0 6px; overflow-wrap:anywhere;}
   .pf-line .muted{display:inline-block; min-width:76px;}
@@ -813,18 +817,11 @@ function fileRowsPreview(rows){
 
 function viewLanding(){
   document.title='Handproof';
-  var d=DEMO[0];
   app.innerHTML=
   '<div class="wrap hero">'+
     '<h1>Proof that a person made it.</h1>'+
     '<p class="lede">Handproof keeps the record of how writing, art, photos, music and films were made, so anyone can see how a piece came together instead of trusting a detector’s score.</p>'+
     '<div class="cta-row"><a class="btn primary" href="#/write">Start writing</a><a class="btn" href="#/make">Share art, photo, music or film</a><a class="btn" href="#/browse">Browse work</a></div>'+
-    '<div id="hero"></div>'+
-    '<ul class="legend" aria-label="How to read the chart">'+
-      '<li><span class="sw line"></span>Length of the text over time</li>'+
-      '<li><span class="sw" style="background:linear-gradient(90deg,#fff 0 33%,#D9E8F8 33% 66%,#FADCE5 66%)"></span>One color for each revision</li>'+
-      '<li><span class="sw mark"></span>Text that was pasted in</li>'+
-    '</ul>'+
   '</div>'+
   '<section class="block wrap">'+
     '<h2>Each kind of work leaves a different kind of record</h2>'+
@@ -854,9 +851,7 @@ function viewLanding(){
       '</ul></div>'+
     '</div>'+
   '</section>'+
-  '<div class="wrap"><div class="band"><h2>Start a draft. The recording begins with your first keystroke.</h2><a class="btn primary" href="#/write">Start writing</a></div></div>';
-
-  mountReplay(document.getElementById('hero'),{snaps:d.snapshots,series:d.series},'“'+d.title+'” by '+d.author+' (sample)',{autoplay:!prefersReducedMotion()});
+  '';
 
   var tabs=app.querySelectorAll('.craft-tab'), panel=document.getElementById('craft-panel');
   function select(k){
@@ -1324,23 +1319,22 @@ function viewPublic(id){
       '<h1>'+esc(d.title)+'</h1>'+
       '<p class="byline">by '+(d.author_id?'<a href="#/w/'+encodeURIComponent(d.author_id)+'">'+esc(d.author)+'</a>':esc(d.author))+', published '+fmtDate(Date.parse(d.published_at))+'</p>'+
       visNoteHTML(d.visibility)+
+      '<p class="pagenote">This is a writing submission on Handproof. It comes with a record of how it was written: Handproof saved it as the author typed, so you can watch it come together below.</p>'+
       (pasted>0
         ? '<p class="banner bad">Pasted text: about '+chars(pasted)+' in '+plural(d.paste_events,'paste')+'. Each one is marked on the chart.</p>'
-        : '<p class="banner good">No pasted text was recorded for this piece.</p>')+
-      '<div class="stats">'+
-        '<div class="stat"><b>'+fmtDur(d.active_seconds)+'</b><span>active writing time</span></div>'+
-        '<div class="stat"><b>'+snaps.length+'</b><span>snapshots</span></div>'+
-        '<div class="stat"><b>'+d.deletions+'</b><span>deletions</span></div>'+
-        '<div class="stat"><b>'+d.word_count+'</b><span>words</span></div>'+
-      '</div>'+
+        : '')+
+      '<p class="sumline"><b>'+d.word_count+' words</b>, '+fmtDur(d.active_seconds)+' of active writing, '+plural(d.deletions,'deletion')+(pasted>0?'.':'. No pasted text was recorded.')+'</p>'+
       '<div id="rp"></div>'+
       '<div class="panel verify" id="verify">'+
-        '<h2>Server record</h2>'+ver+
-        '<dl class="facts-list">'+
-          '<dt>Received in</dt><dd>'+plural(v.batches||0,'batch')+'</dd>'+
-          '<dt>Fingerprint</dt><dd class="fp" title="'+esc(v.head_hash||'')+'">'+esc((v.head_hash||'').slice(0,16))+'…</dd>'+
-        '</dl>'+
-        '<p class="muted">The server stamped every batch with its own clock and chained the checksums, so changing an earlier batch breaks the chain. It can’t show whether someone retyped text from somewhere else, or whose ideas these were.</p>'+
+        '<h2>Is this record intact?</h2>'+ver+
+        '<details class="how"><summary>How this record works</summary>'+
+          '<p>While the author wrote, the server stamped each saved batch with its own clock and linked it to the one before. Changing anything earlier breaks the link, which is how an edited record gets caught.</p>'+
+          '<dl class="facts-list">'+
+            '<dt>Saved in</dt><dd>'+plural(v.batches||0,'batch')+', '+plural(snaps.length,'snapshot')+' in the replay</dd>'+
+            '<dt>Fingerprint</dt><dd class="fp" title="'+esc(v.head_hash||'')+'">'+esc((v.head_hash||'').slice(0,16))+'…</dd>'+
+          '</dl>'+
+          '<p class="muted">What it can’t show: whether someone retyped text from somewhere else, or whose ideas these are.</p>'+
+        '</details>'+
       '</div>'+
       '<p style="margin-top:18px"><button class="btn" type="button" id="copy">Copy final text</button> <button class="btn" type="button" id="link">Copy link to this page</button> <span class="muted" id="copied" aria-live="polite"></span></p>'+
       (d.mine?ownerVisHTML(d):'')+
