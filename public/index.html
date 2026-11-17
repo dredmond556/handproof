@@ -84,7 +84,7 @@
   /* hero */
   .hero h1{font-size:clamp(42px,8.2vw,104px); margin:56px 0 22px; line-height:.98; max-width:11em;}
   .lede{font-size:clamp(18px,2vw,21px); line-height:1.5; max-width:54ch; margin-bottom:26px;}
-  .cta-row{display:flex; gap:12px; flex-wrap:wrap; margin-bottom:56px;}
+  .cta-row{display:flex; gap:12px; flex-wrap:wrap; margin-bottom:0;}
   .legend{display:flex; flex-wrap:wrap; gap:8px 26px; margin:14px 0 0; padding:0; list-style:none; font-size:14px; color:var(--stone);}
   .legend li{display:flex; align-items:center; gap:8px; margin:0;}
   .sw{width:22px; height:12px; border-radius:2px; display:inline-block; border:1px solid rgba(0,0,0,.2);}
@@ -92,6 +92,7 @@
   .sw.mark{width:3px; height:14px; background:var(--flag); border:0;}
 
   section.block{padding-top:96px;}
+  .hero + section.block{padding-top:44px;}
 
   /* replay */
   .replay{border:1.5px solid var(--ink); border-radius:12px; overflow:hidden; background:var(--white);}
@@ -511,6 +512,7 @@ var CONFIG=window.HANDPROOF_CONFIG||{url:'',key:''};
 var sb=null, user=null;
 /* What the address looked like when the page opened: an email link brings tokens (or an error) in the part after the #. Read it before the sign-in library clears it. */
 var arrival=(function(){ var h=location.hash||''; if(/[#&]error(_code|_description)?=/.test(h)) return 'error'; if(/[#&]access_token=/.test(h)&&!/type=recovery/.test(h)) return 'signin'; return ''; })();
+var authReady=false, signupIntent=false;
 var arrivalNote=arrival==='error'?'That link didn’t work. It may have expired or already been used (some email apps open links early). Sign in below, or ask for a new link.':'';
 try{
   if(window.HANDPROOF_CLIENT) sb=window.HANDPROOF_CLIENT;
@@ -539,13 +541,14 @@ var TERMS_VERSION='2026-11-12', recovering=false;
 function onEditor(){ return (location.hash||'').indexOf('#/write')===0; }
 function initAuth(){
   renderNav();
-  if(!sb) return;
+  if(!sb){ authReady=true; return; }
   Promise.resolve(sb.auth.getSession()).then(function(r){
     user=(r&&r.data&&r.data.session&&r.data.session.user)||null;
+    authReady=true;
     if(arrival==='signin' && user){ arrivalNote='Email confirmed. You’re signed in.'; arrival=''; renderNav(); if(location.hash!=='#/account') location.hash='#/account'; else route(); return; }
     if(arrival==='error'){ arrival=''; renderNav(); if(location.hash!=='#/account') location.hash='#/account'; else route(); return; }
     renderNav(); if(!onEditor()) route();
-  },function(){});
+  },function(){ authReady=true; if(!onEditor()) route(); });
   sb.auth.onAuthStateChange(function(ev,s){
     var nu=(s&&s.user)||null, changed=(nu&&nu.id)!==(user&&user.id);
     user=nu; renderNav();
@@ -1434,6 +1437,7 @@ function viewAccount(){
       say('');
     }
     document.getElementById('modeup').addEventListener('click',function(){ setMode(true); dn.focus(); });
+    if(signupIntent){ signupIntent=false; setMode(true); document.getElementById('ah').textContent='Create your profile'; document.title='Create your profile · Handproof'; }
     document.getElementById('modein').addEventListener('click',function(){ setMode(false); em.focus(); });
     function need(pass){
       if(!/^\S+@\S+\.\S+$/.test(em.value.trim())){ say('Enter a valid email address.'); em.focus(); return false; }
@@ -1750,6 +1754,10 @@ function viewLegal(kind){
 /* ---------- profile ---------- */
 function viewProfile(){
   document.title='Profile · Handproof';
+  if(cloudOn() && !user){
+    if(!authReady){ app.innerHTML='<div class="wrap narrow"><p class="muted" role="status">Loading…</p></div>'; return; }
+    signupIntent=true; location.replace('#/account'); return;
+  }
   var totalActive=0, totalWords=0;
   pieces.forEach(function(p){ totalActive+=p.activeSeconds||0; totalWords+=p.wordCount||0; });
   app.innerHTML=
