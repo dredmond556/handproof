@@ -505,6 +505,9 @@ function prefersReducedMotion(){ try{ return !!(window.matchMedia && window.matc
 /* ---------- cloud (optional): accounts, server-side recording, public pages ---------- */
 var CONFIG=window.HANDPROOF_CONFIG||{url:'',key:''};
 var sb=null, user=null;
+/* What the address looked like when the page opened: an email link brings tokens (or an error) in the part after the #. Read it before the sign-in library clears it. */
+var arrival=(function(){ var h=location.hash||''; if(/[#&]error(_code|_description)?=/.test(h)) return 'error'; if(/[#&]access_token=/.test(h)&&!/type=recovery/.test(h)) return 'signin'; return ''; })();
+var arrivalNote=arrival==='error'?'That link didn’t work. It may have expired or already been used (some email apps open links early). Sign in below, or ask for a new link.':'';
 try{
   if(window.HANDPROOF_CLIENT) sb=window.HANDPROOF_CLIENT;
   else if(CONFIG.url && CONFIG.key && window.supabase && window.supabase.createClient){
@@ -535,6 +538,8 @@ function initAuth(){
   if(!sb) return;
   Promise.resolve(sb.auth.getSession()).then(function(r){
     user=(r&&r.data&&r.data.session&&r.data.session.user)||null;
+    if(arrival==='signin' && user){ arrivalNote='Email confirmed. You’re signed in.'; arrival=''; renderNav(); if(location.hash!=='#/account') location.hash='#/account'; else route(); return; }
+    if(arrival==='error'){ arrival=''; renderNav(); if(location.hash!=='#/account') location.hash='#/account'; else route(); return; }
     renderNav(); if(!onEditor()) route();
   },function(){});
   sb.auth.onAuthStateChange(function(ev,s){
@@ -1362,6 +1367,7 @@ function viewAccount(){
     app.innerHTML=
     '<div class="wrap narrow">'+
       '<h1 id="ah">Sign in</h1>'+
+      (arrivalNote?'<p role="status"><b>'+esc(arrivalNote)+'</b></p>':'')+
       '<p>With an account, what you write is recorded on Handproof’s server as you go, and a published piece gets a public link.</p>'+
       '<form id="af" novalidate>'+
         '<div class="only-up" hidden><label for="dn">Name shown on your pieces</label>'+
@@ -1470,6 +1476,7 @@ function viewAccount(){
     '<h2 style="margin-top:34px">Your art, photos, music and film</h2>'+
     '<div id="wl"><p class="muted">Loading…</p></div>'+
     '<div class="row" style="margin-top:10px"><a class="btn" href="#/make">Share a work</a></div>'+
+    (arrivalNote?'<p role="status"><b>'+esc(arrivalNote)+'</b></p>':'')+
     '<div class="actions" style="margin-bottom:30px"><button class="btn" id="signout" type="button">Sign out</button></div>'+
     '<div class="panel" id="blkpanel">'+
       '<h2>Blocked people</h2>'+
@@ -2618,7 +2625,7 @@ function route(){
   else viewLanding();
   window.scrollTo(0,0);
 }
-window.addEventListener('hashchange',route);
+window.addEventListener('hashchange',function(){ if(location.hash!=='#/account') arrivalNote=''; route(); });
 route();
 initAuth();
 
