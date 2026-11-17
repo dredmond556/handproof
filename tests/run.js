@@ -135,12 +135,12 @@ const key = (w, el, k) => el.dispatchEvent(new w.KeyboardEvent('keydown', { key:
 
   /* ---- browse ---- */
   await go(w, '#/browse');
-  ok($$(w, '#rows .tile').length === 3, 'browse: 3 tiles (1 mine + 2 samples)');
+  ok($$(w, '#rows .tile').length === 1, 'browse: 1 tile (mine), no sample tiles');
   ok($$(w, '#rows .tile')[0].textContent.includes('My Test Piece') && !!$$(w, '#rows .tile')[0].querySelector('.chip.flag'), 'browse: my piece first, with pasted-text flag');
-  ok($$(w, '#rows .tile svg').length === 3 && $$(w, '#rows .tile rect.band').length >= 3, 'browse: each tile has a colored thumbnail chart');
+  ok($$(w, '#rows .tile svg').length === 1 && $$(w, '#rows .tile rect.band').length >= 1, 'browse: each tile has a colored thumbnail chart');
   const f = $(w, '#f');
   f.value = 'kitchen'; f.dispatchEvent(new w.Event('input', { bubbles: true }));
-  ok($$(w, '#rows .tile').length === 1, 'browse: filter narrows list');
+  ok($$(w, '#rows .tile').length === 0, 'browse: filter narrows list');
   f.value = 'zzzz'; f.dispatchEvent(new w.Event('input', { bubbles: true }));
   ok($$(w, '#rows .tile').length === 0 && !$(w, '#none').hidden, 'browse: empty filter shows message');
 
@@ -183,7 +183,7 @@ const key = (w, el, k) => el.dispatchEvent(new w.KeyboardEvent('keydown', { key:
   await go(w3, '#/piece/old1');
   ok(/Old piece/.test(txt(w3, 'h1')) && !!$(w3, 'polyline.trace') && $$(w3, 'rect.band').length === 2, 'compat: older saved piece opens and draws a chart');
   await go(w3, '#/browse');
-  ok($$(w3, '#rows .tile').length === 3, 'compat: older saved piece appears in browse');
+  ok($$(w3, '#rows .tile').length === 1, 'compat: older saved piece appears in browse');
 
   /* ---- long piece on a fake clock: 6,000 characters, deletions, long idle gaps ---- */
   const dom4 = boot();
@@ -238,7 +238,7 @@ const key = (w, el, k) => el.dispatchEvent(new w.KeyboardEvent('keydown', { key:
   ok(w6.document.title === 'Handproof' && /Handproof/.test(txt(w6, '.top .brand')), 'rename: page title and header say Handproof');
   ok(/Handproof/.test(txt(w6, '#app')) && !/Handmark/i.test(txt(w6, '.top') + txt(w6, '#app') + txt(w6, 'footer')), 'rename: no old name left in visible text');
   await go(w6, '#/browse');
-  ok($$(w6, '#rows .tile').length === 3 && $$(w6, '#rows .tile')[0].textContent.includes('Migrated piece'), 'rename: pieces saved as Handmark appear under Handproof');
+  ok($$(w6, '#rows .tile').length === 1 && $$(w6, '#rows .tile')[0].textContent.includes('Migrated piece'), 'rename: pieces saved as Handmark appear under Handproof');
   await go(w6, '#/profile');
   ok($(w6, '#nm').value === 'Casey', 'rename: saved name carried over');
   ok(w6.localStorage.getItem('handproof.pieces.v1') !== null, 'rename: old data copied to the new storage key');
@@ -254,7 +254,7 @@ const key = (w, el, k) => el.dispatchEvent(new w.KeyboardEvent('keydown', { key:
   ok(alerts.length === 1 && /storage is full/.test(alerts[0]), 'storage full: publish explains what happened and what to do');
   ok(/#\/write/.test(w5.location.hash) && $(w5, '#x').value === 'A short draft.', 'storage full: you stay in the editor and keep your text');
   await go(w5, '#/browse');
-  ok($$(w5, '#rows .tile').length === 2, 'storage full: nothing half-saved appears in browse');
+  ok($$(w5, '#rows .tile').length === 0, 'storage full: nothing half-saved appears in browse');
 
   console.log('\n' + pass + ' passed, ' + fail + ' failed');
   console.log('Errors captured: ' + (errors.length ? '\n  ' + errors.join('\n  ') : 'none'));

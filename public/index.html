@@ -943,7 +943,7 @@ function viewEditor(){
     if(m==='cloud') h='Signed in as '+esc((user&&user.email)||'you')+'. This piece is being recorded to your account and gets a link when you publish. The public replay shows every version, including text you delete, so don’t type anything you wouldn’t want shown.';
     else if(lostCloud) h='This draft was recording to an account that isn’t signed in here, so it will publish to this browser only.';
     else if(cloudOn() && draft.series.length && user) h='This draft started before you signed in, so it will publish to this browser only. Start a new draft to record to your account.';
-    else if(cloudOn()) h='You’re not signed in. This piece will stay in this browser. <a href="#/account">Sign in</a> before you start to get a public link and a server-side record.';
+    else if(cloudOn()) h='You’re not signed in, so this piece stays in this browser and only you can see it. An account is the easiest way to store your work, get a public link, and let other people see it. <a href="#/account">Sign in or create one</a> before you start.';
     whereEl.innerHTML=h; whereEl.hidden=!h;
     var vp=document.getElementById('vispick'); if(vp) vp.hidden=(m!=='cloud');
   }
@@ -1229,14 +1229,14 @@ function viewBrowse(){
   }
   function fill(q){
     q=(q||'').toLowerCase().trim(); curQ=q;
-    var text=(curK==='all'||curK==='writing')?remote.concat(allPieces()):[];
+    var text=(curK==='all'||curK==='writing')?remote.concat(pieces):[];
     var wk=curK==='writing'?[]:works.filter(function(w){ return curK==='all'||w.kind===curK; });
     var hit=function(t,a){ return !q || (t+' '+a).toLowerCase().indexOf(q)>=0; };
     text=text.filter(function(p){ return hit(p.title,p.author); });
     wk=wk.filter(function(w){ return hit(w.title,w.author); });
     rows.innerHTML=wk.map(workTileHTML).join('')+text.map(tileHTML).join('');
     hydrateImages(rows);
-    none.textContent=(curK==='all'||curK==='writing')?'Nothing matches that filter. Clear it to see everything.':'Nothing here yet for this kind of work. Be the first to share one.';
+    none.textContent=q?'Nothing matches that search. Clear it to see everything.':(curK==='all'?'Nothing has been shared yet. Be the first: write a piece or share a work.':'Nothing here yet for this kind of work. Be the first to share one.');
     none.hidden=(wk.length+text.length)>0;
   }
   document.getElementById('f').addEventListener('input',function(e){ fill(e.target.value); });
@@ -1407,7 +1407,7 @@ function viewAccount(){
     '<div class="wrap narrow">'+
       '<h1 id="ah">Sign in</h1>'+
       (arrivalNote?'<p role="status"><b>'+esc(arrivalNote)+'</b></p>':'')+
-      '<p>With an account, what you write is recorded on Handproof’s server as you go, and a published piece gets a public link.</p>'+
+      '<p>An account is the easiest way to store your work and let other people see it. What you write is recorded on Handproof’s server as you go, and a published piece gets a public link. You can still write without one, but it stays in your own browser.</p>'+
       '<form id="af" novalidate>'+
         '<div class="only-up" hidden><label for="dn">Name shown on your pieces</label>'+
         '<input class="title-input small" id="dn" type="text" maxlength="60" autocomplete="name"></div>'+
@@ -2123,7 +2123,7 @@ function viewMake(id){
     return;
   }
   if(!user){
-    app.innerHTML='<div class="wrap narrow"><h1>Share a work</h1><p>Sign in to upload art, photos, music or film with the files that show how it was made.</p><p><a class="btn primary" href="#/account">Sign in or create an account</a></p></div>';
+    app.innerHTML='<div class="wrap narrow"><h1>Share a work</h1><p>Sign in to upload art, photos, music or film with the files that show how it was made.</p><p class="muted">An account is the easiest way to keep your work safe, get a public link, and let other people see it. It’s free and takes a minute.</p><p><a class="btn primary" href="#/account">Sign in or create an account</a></p></div>';
     return;
   }
   if(!id) return makeStart();
@@ -2134,6 +2134,7 @@ function viewMake(id){
     '<div class="wrap narrow">'+
       '<h1>Share a work</h1>'+
       '<p>Upload your work and the files from each stage of making it. Handproof stamps every file with the server’s clock, links them together, and shows the result on a public page.</p>'+
+      '<p class="muted">Step 1 of 2: name your work. On the next screen you’ll choose and upload your files.</p>'+
       '<form id="mf" novalidate>'+
         '<fieldset class="kinds"><legend>What kind of work is it?</legend>'+
           Object.keys(KINDS).map(function(k,i){
@@ -2142,7 +2143,7 @@ function viewMake(id){
         '</fieldset>'+
         '<label for="mt">Title</label><input class="title-input small" id="mt" type="text" maxlength="120" placeholder="Untitled">'+
         '<label for="md">About this work <span class="muted">(optional)</span></label><textarea id="md" class="bio-in" maxlength="1000"></textarea>'+
-        '<div class="row" style="margin-top:18px"><button class="btn primary" type="submit" id="mgo">Continue</button> <span class="muted" id="mmsg" role="status" aria-live="polite"></span></div>'+
+        '<div class="row" style="margin-top:18px"><button class="btn primary" type="submit" id="mgo">Continue and add files</button> <span class="muted" id="mmsg" role="status" aria-live="polite"></span></div>'+
       '</form>'+
     '</div>';
     document.getElementById('mf').addEventListener('submit',function(e){
