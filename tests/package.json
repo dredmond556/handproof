@@ -2,7 +2,7 @@
   "name": "handproof-tests",
   "private": true,
   "scripts": {
-    "test": "node sqltest.js && node sqltest2.js && node sqltest3.js && node sqltest4.js && node sqltest5.js && node sqltest6.js && node sqltest7.js && node run.js && node cloudtest.js && node flow.js && node profile.js && node works.js && node feedback.js && node visibility.js && node artists.js && node live.js && node pwa.js && node blocks.js && node callback.js && node resilience.js"
+    "test": "node sqltest.js && node sqltest2.js && node sqltest3.js && node sqltest4.js && node sqltest5.js && node sqltest6.js && node sqltest7.js && node run.js && node cloudtest.js && node flow.js && node profile.js && node works.js && node feedback.js && node visibility.js && node artists.js && node live.js && node pwa.js && node blocks.js && node callback.js && node replay.js && node resilience.js"
   },
   "dependencies": {
     "@electric-sql/pglite": "*",

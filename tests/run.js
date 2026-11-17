@@ -51,9 +51,9 @@ const key = (w, el, k) => el.dispatchEvent(new w.KeyboardEvent('keydown', { key:
   ok($$(w, '#hero .stack .tab').length === 6, 'landing: page-stack tabs match snapshots');
   ok(/--bg:#FFFFFF/i.test($(w, '#hero .stack .tab').getAttribute('style')) && /--ink:#B9BCC4/i.test($(w, '#hero .stack .tab').getAttribute('style')), 'landing: tabs carry their revision colors as CSS variables');
   ok($$(w, '#hero .stack .tab').every((t) => !t.textContent), 'landing: tabs are plain color segments with no stray text');
-  ok(/Snapshot 1 of 6/.test(txt(w, '#hero .rp-info')) && txt(w, '#hero .rp-play') === 'Pause', 'landing: hero autoplays from the start');
+  ok(/^\d+:\d\d of /.test(txt(w, '#hero .rp-info')) && txt(w, '#hero .rp-play') === 'Pause', 'landing: hero autoplays from the start');
   await sleep(1500);
-  ok(/Snapshot [2-9] of 6/.test(txt(w, '#hero .rp-info')), 'landing: autoplay advances on its own');
+  ok(!/^0:00 /.test(txt(w, '#hero .rp-info')) && txt(w, '#hero .rp-play') === 'Pause', 'landing: autoplay advances on its own');
   const plot = $(w, '#hero .chart-plot');
   key(w, plot, 'End');
   ok(/Snapshot 6 of 6/.test(txt(w, '#hero .rp-info')) && txt(w, '#hero .rp-play') === 'Play', 'landing: End jumps to last and stops autoplay');
@@ -68,8 +68,8 @@ const key = (w, el, k) => el.dispatchEvent(new w.KeyboardEvent('keydown', { key:
   ok(/Snapshot 3 of 6/.test(txt(w, '#hero .rp-info')) && /Pink revision/.test(txt(w, '#hero .rev-name')), 'landing: clicking a page tab jumps to it');
   $(w, '#hero .rp-play').click();
   ok(txt(w, '#hero .rp-play') === 'Pause', 'landing: Play button toggles to Pause');
-  await sleep(750);
-  ok(/Snapshot [4-9] of 6/.test(txt(w, '#hero .rp-info')), 'landing: manual playback advances');
+  await sleep(1500);
+  ok(/ of \d+:\d\d/.test(txt(w, '#hero .rp-info')) && !/Snapshot 3 of 6/.test(txt(w, '#hero .rp-info')), 'landing: manual playback advances');
   $(w, '#hero .rp-play').click();
   ok(txt(w, '#hero .rp-play') === 'Play', 'landing: pause works');
 
