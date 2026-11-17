@@ -1758,6 +1758,7 @@ function viewProfile(){
     if(!authReady){ app.innerHTML='<div class="wrap narrow"><p class="muted" role="status">Loading…</p></div>'; return; }
     signupIntent=true; location.replace('#/account'); return;
   }
+  if(cloudOn() && user){ viewWriter(user.id); return; }
   var totalActive=0, totalWords=0;
   pieces.forEach(function(p){ totalActive+=p.activeSeconds||0; totalWords+=p.wordCount||0; });
   app.innerHTML=
@@ -2627,6 +2628,7 @@ function viewWriter(id){
       (d.mine&&d.visibility==='link'?'<p><span class="chip">Link only</span> <span class="muted">This page isn’t linked from your pieces. Only people with its address can find it. Change this in Account.</span></p>':'')+
       (d.bio?'<p class="pf-bio">'+esc(d.bio)+'</p>':'')+
       links.join('')+
+      (d.mine?'<p><a class="btn" id="editpf" href="#/account">Edit profile</a> <span class="muted">Change your name, bio, links and who can find this page.</span></p>':'')+
       (user&&!d.mine?'<p id="blkrow">'+(d.blocked?'<span class="chip">Blocked</span> <span class="muted">You don’t see their work or comments.</span> ':'')+'<button class="linkbtn" type="button" id="blkbtn">'+(d.blocked?'Unblock this person':'Block this person')+'</button> <span class="muted" id="blkmsg" role="status" aria-live="polite"></span></p>':'')+
       '<h2 style="margin-top:34px">'+((list.length||(d.works||[]).length)?'Published work':'No published work yet')+'</h2>'+
       '<div class="grid" id="wgrid">'+(d.works||[]).map(workTileHTML).join('')+list.map(tileHTML).join('')+'</div>'+
