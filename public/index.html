@@ -92,6 +92,11 @@
   .sw.mark{width:3px; height:14px; background:var(--flag); border:0;}
 
   section.block{padding-top:96px;}
+  .hero-note{margin:14px 0 0; font-size:15px;}
+  .steps{margin:22px 0 0; padding:0; list-style:none; display:grid; grid-template-columns:repeat(3,1fr); gap:28px; counter-reset:st;}
+  .steps li{counter-increment:st; line-height:1.55;}
+  .steps li::before{content:counter(st); display:block; font-weight:800; font-stretch:112%; font-size:34px; line-height:1; margin-bottom:10px;}
+  .steps b{display:block; font-size:19px; margin-bottom:4px;}
   .hero + section.block{padding-top:44px;}
 
   /* replay */
@@ -290,6 +295,7 @@
 
   @media (max-width:860px){
     .crafts{grid-template-columns:1fr;}
+    .steps{grid-template-columns:1fr; gap:20px;}
     .craft-tabs{flex-direction:row; flex-wrap:wrap;}
     .craft-tab{flex:1 1 150px;}
     .two{grid-template-columns:1fr; gap:24px;}
@@ -822,10 +828,20 @@ function viewLanding(){
   document.title='Handproof';
   app.innerHTML=
   '<div class="wrap hero">'+
-    '<h1>Proof that a person made it.</h1>'+
-    '<p class="lede">Handproof keeps the record of how writing, art, photos, music and films were made, so anyone can see how a piece came together instead of trusting a detector’s score.</p>'+
+    '<h1>See how it was made.</h1>'+
+    '<p class="lede">Handproof is where writers, artists, photographers, musicians and filmmakers publish their work together with a record of how they made it. An AI detector guesses from the finished piece. Handproof lets you watch it come together.</p>'+
     '<div class="cta-row"><a class="btn primary" href="#/write">Start writing</a><a class="btn" href="#/make">Share art, photo, music or film</a><a class="btn" href="#/browse">Browse work</a></div>'+
+    '<p class="muted hero-note">Free. An account is the easiest way to keep your work and let other people see it.</p>'+
   '</div>'+
+  '<div id="feat"></div>'+
+  '<section class="block wrap">'+
+    '<h2>How it works</h2>'+
+    '<ol class="steps">'+
+      '<li><b>Make it.</b> Write in Handproof, or upload the files from each stage of your art, photo, music or film.</li>'+
+      '<li><b>We record it.</b> The server stamps every step with its own clock and links each one to the last, so the order can’t be quietly rearranged.</li>'+
+      '<li><b>Anyone can check it.</b> You get a public page with the finished work, a replay of how it came together, and a check that the record is intact.</li>'+
+    '</ol>'+
+  '</section>'+
   '<section class="block wrap">'+
     '<h2>Each kind of work leaves a different kind of record</h2>'+
     '<p>Writing is recorded live as you type. Art, photos, music and film are made in other tools, so you upload the files from each stage and Handproof stamps them with its own clock. Acting is planned.</p>'+
@@ -855,6 +871,27 @@ function viewLanding(){
     '</div>'+
   '</section>'+
   '';
+
+  /* A real example: the newest public piece that is long enough to be worth watching. Nothing shows until one exists. */
+  (function(){
+    if(!cloudOn()) return;
+    var gone=false; cleanups.push(function(){ gone=true; });
+    rpc('list_public_pieces',{p_limit:12,p_offset:0}).then(function(rows){
+      var pick=(rows||[]).filter(function(r){ return (r.word_count||0)>=100 && !(Number(r.pasted_chars)>0); })[0];
+      if(!pick||gone) return;
+      return rpc('get_public_piece',{p_piece:pick.id}).then(function(d){
+        var host=document.getElementById('feat');
+        if(gone||!d||!host) return;
+        var snaps=(d.replay&&d.replay.snapshots)||[], series=(d.replay&&d.replay.series)||[];
+        if(snaps.length<1) return;
+        host.innerHTML='<section class="block wrap"><h2>A real example</h2>'+
+          '<p>“'+esc(d.title)+'” by '+esc(d.author)+'. Press play to watch it being written.</p>'+
+          '<div id="featrp"></div>'+
+          '<p style="margin-top:18px"><a class="btn" href="#/p/'+encodeURIComponent(d.id||pick.id)+'">Read it and see its full record</a></p></section>';
+        mountReplay(document.getElementById('featrp'),{snaps:snaps,series:series},'“'+d.title+'” by '+d.author,{autoplay:false});
+      });
+    }).catch(function(){});
+  })();
 
   var tabs=app.querySelectorAll('.craft-tab'), panel=document.getElementById('craft-panel');
   function select(k){
