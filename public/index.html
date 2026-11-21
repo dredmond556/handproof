@@ -1925,6 +1925,7 @@ function fileProblem(kind,role,mime,size){
   var vid=kind==='film' && /^video\/(mp4|webm|quicktime)$/.test(mime);
   var k=KINDS[kind];
   if(size<1) return 'That file is empty.';
+  if(/^image\/(heic|heif)/.test(mime)) return 'iPhone HEIC photos aren’t supported yet. Export or share the photo as a JPEG and try again.';
   if(!(img||zip||aud||vid)) return 'That file type isn’t accepted for '+k.name.toLowerCase()+'. '+k.final;
   if(role==='final' && !((k.main==='image'&&img)||(k.main==='audio'&&aud)||(k.main==='video'&&vid))) return 'The finished work must be one of these: '+k.final;
   if(role==='project' && !zip) return 'Project files must be zipped (.zip).';
@@ -2320,6 +2321,7 @@ function viewMake(id){
         (d.kind==='music'?recorderHTML():'')+
         '<div class="panel">'+
           '<h2>Add files</h2>'+
+          '<p>'+(hasFinal()?'Add more files from earlier stages, or an original.':'Start with your finished work. You can add work-in-progress files after that.')+' Pick what the files are, choose them, then click <b>Upload</b>.</p>'+
           '<label for="wr">What are these files?</label>'+
           '<select id="wr">'+
             '<option value="process">Work in progress</option>'+
@@ -2344,6 +2346,7 @@ function viewMake(id){
         '<div class="gap"></div>'+
       '</div>';
       var wr=document.getElementById('wr'), help=document.getElementById('whelp');
+      if(!hasFinal()) wr.value='final';
       function roleHelp(){
         var r=wr.value;
         help.textContent=r==='final'?k.final:r==='project'?'A zipped project file from the app you made this in.':r==='original'?'The untouched source: a camera original, a raw recording, or a source file.':'Anything that shows the work taking shape: sketches, takes, stems, progress cuts.';
